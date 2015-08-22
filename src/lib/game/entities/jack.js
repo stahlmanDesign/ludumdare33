@@ -37,6 +37,7 @@ ig.module(
 		message: "",
 		message: "",
 		state:"idle",
+
 		type: ig.Entity.TYPE.B,
 		// Type property, 3 possiblities
 		// NONE[default] --- A: ("friendly") --- B: ("enemy")
@@ -155,6 +156,67 @@ ig.module(
 			}
 			this.currentAnim.flip.x = this.flip;
 			this.parent();
+        },
+        kill: function(){
+	        this.parent();
+			ig.game.spawnEntity( EntitySplash, this.pos.x, this.pos.y);
         }
     });
+        // Add additional classes here that will only be accessed by this entity
+
+	EntitySplash = ig.Entity.extend({
+        lifetime: 1,
+        callBack: null,
+        particles: 125,
+
+        init: function( x, y, settings ) {
+            this.parent( x, y, settings );
+
+                for(var i = 0; i < this.particles; i++)
+                    ig.game.spawnEntity(EntitySplashparticlelocal, x+ (Math.random()*12)-6, y, {colorOffset: settings.colorOffset ? settings.colorOffset : 0});
+                this.idleTimer = new ig.Timer();
+            },
+        update: function() {
+            if( this.idleTimer.delta() > this.lifetime ) {
+                this.kill();
+                if(this.callBack)
+                    this.callBack();
+                return;
+            }
+        }
+    });
+    EntitySplashparticlelocal = ig.Entity.extend({
+        size: {x: 2, y: 2},
+        maxVel: {x: 160, y: -100},
+        lifetime: 2,
+        fadetime: 1,
+        bounciness: 0,
+        vel: {x: 100, y: -100},
+        friction: {x:100, y: 600},
+        collides: ig.Entity.COLLIDES.LITE,
+        colorOffset: 0,
+        totalColors: 7,
+        gravityFactor:1.1,
+        animSheet: new ig.AnimationSheet( 'media/splash.png', 2, 2 ),
+        init: function( x, y, settings ) {
+            this.parent( x, y, settings );
+            var frameID = Math.round(Math.random()*this.totalColors) + (this.colorOffset * (this.totalColors+1));
+            this.addAnim( 'idle', 0.2, [frameID] );
+            this.vel.x = (Math.random() * 2 - 1) * this.vel.x;
+            this.vel.y = (Math.random() * 2 - 0) * this.vel.y;
+            this.idleTimer = new ig.Timer();
+        },
+        update: function() {
+            if( this.idleTimer.delta() > this.lifetime ) {
+                this.kill();
+                return;
+            }
+            this.currentAnim.alpha = this.idleTimer.delta().map(
+                this.lifetime - this.fadetime, this.lifetime,
+                1, 0
+            );
+            this.parent();
+        }
+    });
+
 });

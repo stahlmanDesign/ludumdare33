@@ -15,7 +15,7 @@ ig.module(
 			y: 300
 		},
         type: ig.Entity.TYPE.A, // Player friendly group
-		checkAgainst: ig.Entity.TYPE.NONE,
+		checkAgainst: ig.Entity.TYPE.B,
         collides: ig.Entity.COLLIDES.PASSIVE,
 
 		name:"player",
@@ -132,6 +132,11 @@ ig.module(
 			// Move!
 			this.parent();
 			//ig.show(this.deadlyFallTimer.delta(),"dft")
+		},
+		check:function(other){
+			if (other instanceof EntityJack && this.vel.y > 0 && !this.standing){
+				other.kill();
+			}
 		}
 	});
 });
