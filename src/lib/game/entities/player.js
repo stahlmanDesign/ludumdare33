@@ -40,7 +40,8 @@ ig.module(
         	this.addAnim( 'pain', 0.3, [11,12,11,11,12], true );
 
 			this.jump = 350;
-			this.deadlyFallTimer = new ig.Timer(0);
+			this.deadlyFallTimer = new ig.Timer(1);
+
 		},
 
 
@@ -84,8 +85,8 @@ ig.module(
 				this.currentAnim = this.anims.jump;
 			} else if (this.vel.y > 0 && !this.isClimbing) {
 
-				// if timer
-				if (this.deadlyFallTimer.delta() > 0) this.deadlyFallTimer.set(1); // one second; will count from -1 to 0
+				// set timer to one second if not already in pain and not already checking fall time
+				//if (this.currentAnim != this.anims.pain ) this.deadlyFallTimer.set(1); // one second; will count from -1 to 0
 
 				if (this.currentAnim != this.anims.fall) {
 					this.currentAnim = this.anims.fall.rewind();
@@ -117,13 +118,17 @@ ig.module(
 				//}
 			}
 
+			if (this.standing && this.deadlyFallTimer.delta() < 0){
+				this.deadlyFallTimer.set(1); // reset to one second cause safely on ground
+			}
 			if (this.standing && this.deadlyFallTimer.delta() > 0){
 				this.currentAnim = this.anims.pain.rewind();
-
-				this.deadlyFallTimer.set(0);
+				if (this.deadlyFallTimer.delta() > 2) this.deadlyFallTimer.set(1); // after 2 seconds of pain, reset
 			}
+
 			// Move!
 			this.parent();
+			//ig.show(this.deadlyFallTimer.delta(),"dft")
 		}
 	});
 });
