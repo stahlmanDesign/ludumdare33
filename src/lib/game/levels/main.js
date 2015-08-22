@@ -5,8 +5,8 @@ LevelMain=/*JSON[*/{
 	"entities": [
 		{
 			"type": "EntityPlayer",
-			"x": 516,
-			"y": 336
+			"x": 568,
+			"y": 424
 		}
 	],
 	"layer": [
@@ -15,7 +15,7 @@ LevelMain=/*JSON[*/{
 			"width": 360,
 			"height": 440,
 			"linkWithCollision": false,
-			"visible": true,
+			"visible": 1,
 			"tilesetName": "",
 			"repeat": false,
 			"preRender": false,
@@ -925,7 +925,7 @@ LevelMain=/*JSON[*/{
 			"width": 30,
 			"height": 20,
 			"linkWithCollision": false,
-			"visible": true,
+			"visible": 1,
 			"tilesetName": "media/ds_atlas_BTR.png",
 			"repeat": true,
 			"preRender": false,

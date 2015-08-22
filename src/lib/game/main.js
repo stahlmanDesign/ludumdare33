@@ -25,14 +25,14 @@ ig.module(
 
 	'game.entities.spawnpoint',		// to put player back in hammock if dies, or when transitioning from different levels
 
-	'game.levels.title',			// credits, story, instructions etc.
+	//'game.levels.title',			// credits, story, instructions etc.
 	'game.levels.main',				// the main world map
 
 	'impact.debug.debug'			// Include debugger
 
 )
 .defines(function() { 				// Everybaseitem in defines() is the game logic
-	Ludumdare33 = ig.Game.extend({
+	feefifofum = ig.Game.extend({
 		gravity: 600,				// All entities affected by this. Without this, entities don't fall
 
 		buttonFont: new ig.Font('media/outlinedfont.png'),
@@ -119,16 +119,16 @@ ig.module(
 
 			ig.game.loadLevel(ig.global['Level' + levelToStart]);
 */
-
+			ig.game.loadLevel(ig.global['Level' + 'Main']);
 			// end init()
 		},
 
 		loadLevel: function(data) {
-
-
 			// Call the parent implemenation; this renders the level, background maps and entities.
+			console.log(data)
 			ig.game.parent(data);
 
+/*
 			ig.game.setupCamera();	// used to keep player in middle of screen and move map
 
 			for (var i = 0; i < ig.game.backgroundMaps.length; i++) {
@@ -136,6 +136,7 @@ ig.module(
 				if (bgmap.name == "hiddenInteriors") ig.game.hiddenInteriors = bgmap; // keep a reference to the layer hiddenInteriors in the Worldmap
 
 			}
+*/
 
 		},
 		setupCamera: function() {
@@ -203,10 +204,7 @@ ig.module(
 		},
 		update: function() {
 			//console.log(ig.game.playerStats.currentLevel)
-			ig.show("bugs",ig.game.bugs.length);
-			ig.show("pommes",ig.game.pommes.length);
-			ig.show("fish",ig.game.gameFish.length);
-			ig.show("gt", Math.round(ig.game.timer.game.delta()) );
+
 			//ig.show("dt", Math.round(ig.game.timer.dante.delta()) );
 
 			if (ig.input.pressed("new")) this.newGame();
@@ -219,20 +217,23 @@ ig.module(
 			if (ig.input.pressed("pause")) this.pause(); // pause whole game
 			if (ig.input.pressed("unpause")) this.unpause(); // unpause whole game
 
+/*
 			if 		(ig.game.joystick.input.x < -0.25) ig.input.trigger('left')
 			else if (ig.game.joystick.input.x > 0.25) ig.input.trigger('right')
 			if 		(ig.game.joystick.input.y < -0.25) ig.input.trigger('up')
 			else if (ig.game.joystick.input.y > 0.25) ig.input.trigger('down')
+*/
 			//if 		(!ig.global.wm) ig.show("fish", this.gameFish.length)
 
 
 			// Camera follows the player
-			this.camera.follow(this.player);
+			//this.camera.follow(this.player);
 			// Instead of using the camera plugin, we could also just center
 			// the screen on the player directly, like this:
 			// this.screen.x = this.player.pos.x - ig.system.width/2;
 			// this.screen.y = this.player.pos.y - ig.system.height/2;
 
+/*
 			var wisdom = ig.game.getInventory("player","wisdom");
 			var courage = ig.game.getInventory("player","courage");
 			var spirit = ig.game.getInventory("player","spirit");
@@ -284,9 +285,11 @@ ig.module(
 				ig.game.spawnpoint = "underworldJail"; // if this instance of level change has a spawn point, put player there, otherwise put where weltmeister layout has player
 				ig.game.loadLevelDeferred(ig.global['Level' + ig.game.playerStats.worldLevel]);
 			}
+*/
 
 			// Update all entities and BackgroundMaps
 			this.parent();
+/*
 
 			// slowly adjust wisdom, spirit and courage
 			// increase wisdom once a minute
@@ -306,6 +309,7 @@ ig.module(
 			if (courage.quantity > 30) courage.quantity = 30;
 			if (courage.quantity < 0) courage.quantity = 0;	// don't let it go below zero
 			if (spirit.quantity < 0) spirit.quantity = 0;
+*/
 
 
 		},
@@ -589,6 +593,7 @@ ig.module(
 			// Call draw() on your special entity with the extra
 			// parameter added
 
+/*
 			//console.log(ig.game.entitiesOnTop.length)
 			for (var i = 0; i < ig.game.entitiesOnTop.length; i++) {
 				ig.game.entitiesOnTop[i].draw(true)
@@ -671,6 +676,7 @@ ig.module(
 				window.myTouchButtons.draw();
 				ig.game.joystick.draw();
 			}
+*/
 		},
 		danteSecondsLeft: function(){
 			//console.log("ig.game.playerStats.secondsDanteAllows = " + ig.game.playerStats.secondsDanteAllows);
@@ -812,8 +818,8 @@ ig.module(
 		}
 	}, false);
 
-	// Finally, start the game into Dreamsong and use the ImpactSplashLoader plugin as our loading screen
+	// Finally, start the game and use the ImpactSplashLoader plugin as our loading screen
 	var width = window.innerWidth * scale,
 		height = window.innerHeight * scale;
-	ig.main('#canvas', Dreamsong, 60, width, height, 1, ig.ImpactSplashLoader);
+	ig.main('#canvas', feefifofum, 60, width, height, 1, ig.ImpactSplashLoader);
 });

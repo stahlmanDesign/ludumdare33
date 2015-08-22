@@ -8,10 +8,10 @@ ig.module(
 
     EntityPlayer = ig.Entity.extend({
 
-        size: { x: 32, y: 32 },
+        size: { x: 18, y: 34 },
         collides: ig.Entity.COLLIDES.PASSIVE,
 
-        animSheet: new ig.AnimationSheet('media/player.png', 32, 32),
+        animSheet: new ig.AnimationSheet('media/personnages.png', 18, 34),
 
         init: function (x, y, settings) {
 
