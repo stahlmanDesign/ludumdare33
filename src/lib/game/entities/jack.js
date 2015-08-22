@@ -29,7 +29,7 @@ ig.module(
 		accelGround: 600,
 		accelAir: 500,
 		speed: {"current":0,"idle":0,"walk":150},
-		distanceForMessage: 60,
+		distanceToFlee: 60,
 		flipTimer: null,
 
 		chain: null,
@@ -105,7 +105,7 @@ ig.module(
 			this.chain(); // execute the event chain
 
 			if (ig.game.player) {
-				if (this.distanceTo(ig.game.player) < this.distanceForMessage && this.fleeingTimer.delta() > 0) {
+				if (this.distanceTo(ig.game.player) < this.distanceToFlee && this.fleeingTimer.delta() > 0) {
 					this.fleeingTimer.set(1);
 					this.state = "flee";
 					this.flip = !this.flip;

@@ -21,24 +21,38 @@ ig.module(
 		spriteId: 0,			// Use this if you have different sprites in your texture
 		ladderTexture: null,	// defined in ladder.js, not in base-ladder.js
 		ladderSpeed: 60, 		// default. An entity can override this so different entites climb at different speeds
-		gravityFactor:0,
-		checkAgainst:ig.Entity.TYPE.A,
-		collides:ig.Entity.COLLIDES.NONE,
-		zIndex: 3,				// must be in front of entities that can climb when instantiated, due to the order in which WM saves and loads entities.
+
+		checkAgainst: ig.Entity.TYPE.A,
+		// Check Against property, 4 possiblities
+		// NONE[default]: (check() not called)
+		// A: (A touches B) --- B: (B touches A) --- BOTH: (A touches A, B touches B)
+		collides: ig.Entity.COLLIDES.PASSIVE,
+		// Collides property, 5 possibilities
+		// NEVER[default]: (ignores all collisions)
+		// FIXED: (a "strong" entity that won't move as a result of a collision. Like elevators and moving platforms.)
+		// ACTIVE: (if ACTIVE, or ACTIVE and PASSIVE entities collide, they will both move apart)
+		// PASSIVE: (if 2 PASSIVE entities of similar types collide, they can overlap. i.e., two freindly entities can pass by each other if passive)
+		// LITE: (opposite of FIXED, a "weak" entity always moves away from a collision)
+		zIndex: -1,				// must be behind entities
 		eligibleClimbers : [],	// set below in init()
 		invisible: false,
 
 		init: function(x, y, settings) {
+
 			if (settings.invisible == undefined) settings.invisible = false; // in case left undefined
 			//alert("settings.invisible = " + settings.invisible)
 			if (settings.invisible == "true") {
 				//alert("settings.invisible = " + settings.invisible)
 				this.invisible = true;
 			}
+			this.invisible = false;
 			if (settings.id != undefined) { this.spriteId = settings.id; }
+
+			if (settings.gravityFactor) this.gravityFactor = settings.gravityFactor;
 			this.parent(x, y, settings);
 		},
 		update: function() {
+			this.parent();
 			this.eligibleClimbers = [ig.game.player];	// add entites here. Must be in update loop if player killed and regenerated in level after ladder init
 			if(!this.eligibleClimbers[0].isConfiguredForClimbing)this.makeEntitiesEligibleClimbers(); // reduce update calls
 		},
@@ -54,17 +68,16 @@ ig.module(
 		},
 		draw: function() {
 
-			if (!this.ladderTexture || this.invisible){
-				//console.log("ladder invisible = true");
-				return;
-			}else{
-				if (ig.editor) {
+			//if (!this.ladderTexture || this.invisible){
+			//	//console.log("ladder invisible = true");
+			//	return;
+			//}else{
+				//if (ig.editor) {
 					if (this.size.x > this.ladderTexture.width) this.size.x = this.ladderTexture.width;
 					if (this.size.y > this.ladderTexture.height) this.size.y = this.ladderTexture.height;
-				}
-				this.ladderTexture.drawTile(
-				this.pos.x - this.offset.x - ig.game._rscreen.x, this.pos.y - this.offset.y - ig.game._rscreen.y, 0, this.size.x, this.size.y, 0, this.spriteId);
-			}
+				//}
+				this.ladderTexture.drawTile( this.pos.x - this.offset.x - ig.game._rscreen.x, this.pos.y - this.offset.y - ig.game._rscreen.y, 0, this.size.x, this.size.y, 0, this.spriteId);
+			//}
 		},
 		check: function(other) {
 

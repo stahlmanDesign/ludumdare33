@@ -108,8 +108,11 @@ ig.module(
 			if (this.isConfiguredForClimbing){
 				this.checkForLadder(this);
 				if (this.ladderTouchedTimer.delta() > 0) this.isTouchingLadder = false; // reset in case player leaves ladder. This allows to walk across/atop ladder
+				else this.deadlyFallTimer.set(0.5); // on ladder so cancel falling timer
 			}
+
 			// ------------------  end  ladder code ------------------
+
 			// jump
 			if (this.standing && ig.input.pressed('jump')) {
 				//if (ig.input.state('up') || ig.input.state('left') || ig.input.state('right')) {

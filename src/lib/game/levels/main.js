@@ -63,8 +63,8 @@ LevelMain=/*JSON[*/{
 		},
 		{
 			"type": "EntityLadder",
-			"x": 2188,
-			"y": 2320,
+			"x": 2104,
+			"y": 2312,
 			"settings": {
 				"invisible": false,
 				"size": {
@@ -107,8 +107,8 @@ LevelMain=/*JSON[*/{
 		},
 		{
 			"type": "EntityLadder",
-			"x": 2196,
-			"y": 2252,
+			"x": 2064,
+			"y": 2588,
 			"settings": {
 				"invisible": false,
 				"size": {
