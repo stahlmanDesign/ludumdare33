@@ -8,69 +8,110 @@ ig.module(
 
     EntityPlayer = ig.Entity.extend({
 
-        size: { x: 72, y: 126 },
+        size: { x: 36, y: 100 }, // total sprite size = {x:72,y:126}
+        offset: {x:18,y:26},		// collision box smaller than sprite size
+        maxVel: {
+			x: 175,
+			y: 300
+		},
+        type: ig.Entity.TYPE.A, // Player friendly group
+		checkAgainst: ig.Entity.TYPE.NONE,
         collides: ig.Entity.COLLIDES.PASSIVE,
 
+		name:"player",
         animSheet: new ig.AnimationSheet('media/giant.png', 72, 126),
-	accelGround: 400,
-	accelAir: 200,
+		accelGround: 600,
+		accelAir: 500,
+        friction: {x:200,y:0},
         init: function( x, y, settings ) {
+
+	        ig.game.player = this;
+
 			this.parent( x, y, settings );
 
 			// Add the animations
+
 			this.addAnim( 'idle', 1, [0] );
-			this.addAnim( 'run', 0.15, [1,0,2,0] );
-			this.addAnim( 'jump', 1, [9] );
-			this.addAnim( 'fall', 0.4, [6,7] );
-			this.jump = 300;
+        	this.addAnim( 'run', 0.07, [1,0,2,0] );			// name or ID, duration of frame, the different frames (tiles) to animate
+			this.addAnim( 'jump', 1, [3], true );		// true = stop at the last frame
+        	this.addAnim( 'fall', 1, [3] );
+        	this.addAnim( 'up', 0.20, [6,7] );
+        	this.addAnim( 'down', 0.20, [7,6] );
+        	this.addAnim( 'pain', 0.3, [11,12,11,11,12], true );
+
+			this.jump = 350;
 		},
 
 
 		update: function() {
-
-			// move left or right
+			// Handle user input; move left or right
+			// Handle user input; move left or right
 			var accel = this.standing ? this.accelGround : this.accelAir;
-			if( ig.input.state('left') ) {
+			if( ig.input.state('left')) {
+				if (this.accel.x > 0) this.vel.x *=0.25; // prevents sliding as if on ice when changing direction
 				this.accel.x = -accel;
 				this.flip = true;
+
 			}
-			else if( ig.input.state('right') ) {
+			else if( ig.input.state('right')) {
+				if (this.accel.x < 0) this.vel.x *=0.25; // prevents sliding as if on ice when changing direction
 				this.accel.x = accel;
 				this.flip = false;
 			}
 			else {
 				this.accel.x = 0;
 			}
+			// Stay in the pain animation, until it has looped through.
+			// If not in pain, set the current animation, based on the
+			// player's speed
+			if (
+			this.currentAnim == this.anims.pain && this.currentAnim.loopCount < 1) {
+				// If we're dead, fade out
+				if (this.health <= 0) {
+					// The pain animation is 0.3 seconds long, so in order to
+					// completely fade out in this time, we have to reduce alpha
+					// by 3.3 per second === 1 in 0.3 seconds
+					var dec = (1 / this.currentAnim.frameTime) * ig.system.tick;
+					this.currentAnim.alpha = (this.currentAnim.alpha - dec).limit(0, 1);
+				}
+			} else if (this.health <= 0) {
+				// We're actually dead and the death (pain) animation is
+				// finished. Remove ourself from the game world.
+				this.kill();
+			} else if (this.vel.y < 0) {
 
-
-			// jump
-			if( this.standing && ig.input.pressed('jump') ) {
-				this.vel.y = -this.jump;
-			}
-
-			// shoot
-			if( ig.input.pressed('shoot') ) {
-				ig.game.spawnEntity( EntitySlimeGrenade, this.pos.x, this.pos.y, {flip:this.flip} );
-			}
-
-			// set the current animation, based on the player's speed
-			if( this.vel.y < 0 ) {
 				this.currentAnim = this.anims.jump;
-			}
-			else if( this.vel.y > 0 ) {
-				this.currentAnim = this.anims.fall;
-			}
-			else if( this.vel.x != 0 ) {
+			} else if (this.vel.y > 0) {
+				if (this.currentAnim != this.anims.fall) {
+					this.currentAnim = this.anims.fall.rewind();
+				}
+			} else if (this.vel.x != 0) {
 				this.currentAnim = this.anims.run;
-			}
-			else {
+			} else {
 				this.currentAnim = this.anims.idle;
 			}
 
+
+			// animation for ladder
+			if (this.vel.y < 0 && this.isClimbing)this.currentAnim = this.anims.up;
+			else if (this.vel.y > 0 && this.isClimbing)this.currentAnim = this.anims.down;
+
 			this.currentAnim.flip.x = this.flip;
 
-
-			// move!
+			// ------------------ begin ladder code ------------------
+			if (this.isConfiguredForClimbing){
+				this.checkForLadder(this);
+				if (this.ladderTouchedTimer.delta() > 0) this.isTouchingLadder = false; // reset in case player leaves ladder. This allows to walk across/atop ladder
+			}
+			// ------------------  end  ladder code ------------------
+			// jump
+			if (this.standing && ig.input.pressed('jump')) {
+				//if (ig.input.state('up') || ig.input.state('left') || ig.input.state('right')) {
+					this.vel.y = - this.jump //-this.jump;
+					//this.sfxJump.play();
+				//}
+			}
+			// Move!
 			this.parent();
 		}
 	});

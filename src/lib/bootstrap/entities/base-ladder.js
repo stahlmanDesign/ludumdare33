@@ -45,7 +45,8 @@ ig.module(
 		makeEntitiesEligibleClimbers:function(){
 			if (ig.global.wm) return;
 			for (var i=0; i< this.eligibleClimbers.length; i++){
-				if(this.eligibleClimbers[i].isConfiguredForClimbing == undefined) {				// if more than one ladder in a level, only instantite ladder code once for the entity
+
+				if(this.eligibleClimbers[i].isConfiguredForClimbing == undefined) {		// if more than one ladder in a level, only instantite ladder code once for the entity
 					this.eligibleClimbers[i].zIndex = this.zIndex + 1;					// zIndex can be changed so entity is in front of ladder AFTER instantiation
 					this.configureEntityInstanceForClimbing(this.eligibleClimbers[i]);	// this allows EntityPlayer[0] to use ladders. Support for other entities could be added in future
 				}

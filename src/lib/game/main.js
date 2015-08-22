@@ -33,7 +33,7 @@ ig.module(
 )
 .defines(function() { 				// Everybaseitem in defines() is the game logic
 	feefifofum = ig.Game.extend({
-		gravity: 600,				// All entities affected by this. Without this, entities don't fall
+		gravity: 1000,				// All entities affected by this. Without this, entities don't fall
 
 		buttonFont: new ig.Font('media/outlinedfont.png'),
 		init: function(levelToStart) {
@@ -205,10 +205,10 @@ ig.module(
 		update: function() {
 			//console.log(ig.game.playerStats.currentLevel)
 
-		var player = this.getEntitiesByType( EntityPlayer )[0];
-		if( player ) {
-			this.screen.x = player.pos.x - ig.system.width/2;
-			this.screen.y = player.pos.y - ig.system.height/2;
+
+		if( ig.game.player ) {
+			this.screen.x = ig.game.player.pos.x - ig.system.width/2;
+			this.screen.y = ig.game.player.pos.y - ig.system.height/2;
 		}
 			// Update all entities and BackgroundMaps
 			this.parent();
