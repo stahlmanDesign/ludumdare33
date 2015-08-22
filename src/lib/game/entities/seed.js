@@ -37,7 +37,7 @@ ig.module(
 
 	    init: function (x,y,settings){
 		    this.parent(x + (settings.flip ? - 4 : 8), y+8, settings);						// use flip from optional settings object and apply offset to x,y values that we pass to parent() so starts in correct position and appears to be thrown
-		    console.log(settings.flip)
+
 		    this.vel.x = (settings.flip ? -this.maxVel.x : this.maxVel.x);					// set to max vel of basecharacter so object thrown goes out at maxVel.x
 		    this.vel.y = -(50 + (Math.random()*100));
 		    if (settings.vel){
