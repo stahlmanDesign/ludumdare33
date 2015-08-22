@@ -3,6 +3,7 @@ ig.module(
 )
 .requires(
     'impact.entity',
+    'game.entities.seed',
    	'game.system.eventChain'		// event chain plugin https://github.com/drhayes/impactjs-eventchain
 )
 .defines(function() {
@@ -78,7 +79,7 @@ ig.module(
 
 			this.flipTimer = new ig.Timer(this.getRand(4)); // only flip once a second to avoid frantic flipping in tight area
 
-
+			this.throwSeedTimer = new ig.Timer(1); // when throwing a seed only throw one a second max
         },
 		getRand: function(factor){
 			return Math.random()*factor;
@@ -132,7 +133,10 @@ ig.module(
 					this.currentAnim = this.anims.idle;
 					this.currentAnim.flip.x = this.flip; // sit still but in direction of last movement
 
-
+					if (Math.random() <  0.05 && this.throwSeedTimer.delta() > 0) {
+						ig.game.spawnEntity(EntitySeed, this.pos.x,this.pos.y - 30,{flip:Math.random()>0.5 ? 1 : 0});
+						this.throwSeedTimer.reset();
+					}
 			} else if (this.state == "walk") {
 				// ------------- walk -------------
 				this.currentAnim = this.anims.walk;

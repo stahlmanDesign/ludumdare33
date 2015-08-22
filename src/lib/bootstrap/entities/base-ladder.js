@@ -52,6 +52,9 @@ ig.module(
 			this.parent(x, y, settings);
 		},
 		update: function() {
+			this.zIndex = -1;
+			ig.game.sortEntitiesDeferred();
+
 			this.parent();
 			this.eligibleClimbers = [ig.game.player];	// add entites here. Must be in update loop if player killed and regenerated in level after ladder init
 			if(!this.eligibleClimbers[0].isConfiguredForClimbing)this.makeEntitiesEligibleClimbers(); // reduce update calls

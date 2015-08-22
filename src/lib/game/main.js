@@ -20,7 +20,7 @@ ig.module(
 	'game.entities.basecharacter',	// most characters extend this
 	'game.entities.baseitem',		// most items extend this
 	'game.system.eventChain',		// for walking around, pausing, rabbits digging etc. https://github.com/drhayes/impactjs-eventchain
-
+	'game.entities.ladder',
 
 
 	'game.entities.spawnpoint',		// to put player back in hammock if dies, or when transitioning from different levels
