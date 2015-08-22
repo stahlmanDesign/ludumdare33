@@ -37,7 +37,7 @@ ig.module(
 
 		buttonFont: new ig.Font('media/outlinedfont.png'),
 		init: function(levelToStart) {
-/*
+
 
 			// Bind keys, gamepad and tactile input
 			ig.input.bind(ig.KEY.LEFT_ARROW, 'left');
@@ -48,7 +48,7 @@ ig.module(
 			ig.input.bind(ig.KEY.C, 'throw');
 
 			ig.input.bind(ig.KEY.MOUSE1, 'click');				// required for button to be clickable
-
+/*
 			ig.input.bind(ig.GAMEPAD.PAD_LEFT, 'left');
 			ig.input.bind(ig.GAMEPAD.PAD_RIGHT, 'right');
 			ig.input.bind(ig.GAMEPAD.PAD_UP, 'up');
@@ -125,11 +125,11 @@ ig.module(
 
 		loadLevel: function(data) {
 			// Call the parent implemenation; this renders the level, background maps and entities.
-			console.log(data)
+
 			ig.game.parent(data);
 
-/*
-			ig.game.setupCamera();	// used to keep player in middle of screen and move map
+
+/*			ig.game.setupCamera();	// used to keep player in middle of screen and move map
 
 			for (var i = 0; i < ig.game.backgroundMaps.length; i++) {
 				var bgmap = ig.game.backgroundMaps[i];
@@ -205,88 +205,11 @@ ig.module(
 		update: function() {
 			//console.log(ig.game.playerStats.currentLevel)
 
-			//ig.show("dt", Math.round(ig.game.timer.dante.delta()) );
-
-			if (ig.input.pressed("new")) this.newGame();
-			if (ig.input.pressed("save")) this.saveGame();
-			if (ig.input.pressed('load')) this.loadGame();
-			if (ig.input.pressed('1')) this.loadOrSaveNumberOrCancel('1');
-			if (ig.input.pressed('2')) this.loadOrSaveNumberOrCancel('2');
-			if (ig.input.pressed('3')) this.loadOrSaveNumberOrCancel('3');
-			if (ig.input.pressed('esc')) this.loadOrSaveNumberOrCancel('esc');
-			if (ig.input.pressed("pause")) this.pause(); // pause whole game
-			if (ig.input.pressed("unpause")) this.unpause(); // unpause whole game
-
-/*
-			if 		(ig.game.joystick.input.x < -0.25) ig.input.trigger('left')
-			else if (ig.game.joystick.input.x > 0.25) ig.input.trigger('right')
-			if 		(ig.game.joystick.input.y < -0.25) ig.input.trigger('up')
-			else if (ig.game.joystick.input.y > 0.25) ig.input.trigger('down')
-*/
-			//if 		(!ig.global.wm) ig.show("fish", this.gameFish.length)
-
-
-			// Camera follows the player
-			//this.camera.follow(this.player);
-			// Instead of using the camera plugin, we could also just center
-			// the screen on the player directly, like this:
-			// this.screen.x = this.player.pos.x - ig.system.width/2;
-			// this.screen.y = this.player.pos.y - ig.system.height/2;
-
-/*
-			var wisdom = ig.game.getInventory("player","wisdom");
-			var courage = ig.game.getInventory("player","courage");
-			var spirit = ig.game.getInventory("player","spirit");
-
-			// if player "dies" just transport back to beginning of main level
-			if (spirit.quantity < 1) {
-
-				wisdom.quantity < 30 ? wisdom.quantity++ : wisdom.quantity = 30; // wisdom grows with each death
-				spirit.quantity = 1; // having rested set it to 3
-
-				this.playerStats.message = "You were found unconscious\nSadder and wiser..."
-				this.playerStats.currentLevel = this.playerStats.worldLevel; // this makes sure fog of war is not on
-				this.spawnpoint = "hammock"; // if this instance of level change has a spawn point, put player there, otherwise put where weltmeister layout has player
-				this.loadLevelDeferred(ig.global['Level' + this.playerStats.worldLevel]);
-			}
-
-			// I think this fixes player being in front of s
-			if (Math.random() > .99) {
-				this.player.zIndex = 1;
-				this.sortEntitiesDeferred();
-				//console.log(ig.game.joystick.input)
-				//console.log("player = " + ig.game.player.zIndex)
-				//console.log("EntityLadder = " + ig.game.getEntitiesByType("EntityLadder")[0].zIndex)
-			}
-
-			// this ensures game timer and dante timer unpause after load or save, basically as long as game is being played ...
-			if (!ig.game.saving || !ig.game.loading){ // if game not paused at dialog prompt
-
-				// ...unless these conditions
-				if (ig.game.playerStats.piperDefeated || ig.game.playerStats.gameOver) ig.game.timer.game.pause();
-				else{
-					if (ig.game.getInventory("player","countdown").quantity > 0 )
-					ig.game.timeElapsed.dante = Math.round(ig.game.timer.dante.delta()) + ig.game.playerStats.timeElapsed.dante;
-						//Math.round(ig.game.timer.game.delta()) + ig.game.playerStats.secondsDanteAllows - ig.game.playerStats.timeElapsed.dante // ig.game.playerStats.timeElapsed.game ;//- ig.game.playerStats.timeDanteCountdownBegan;
-					ig.game.timeElapsed.game =  Math.round(ig.game.timer.game.delta()) + ig.game.playerStats.timeElapsed.game;
-				}
-			}
-
-			// dante timer is up! game over!
-
-			var seconds = ig.game.danteSecondsLeft();
-			//console.log(ig.game.playerStats.gameOver);
-			if (seconds <= 0 && !ig.game.playerStats.gameOver && !ig.game.loading && !ig.game.saving && ig.game.getInventory("player","countdown").quantity > 0 ){
-				//alert("going to assign game over message")
-				ig.game.playerStats.message = "GAME OVER\nDante: Your time is up!\nYou failed to give the clarinet to\nthe piper... Your soul is mine forever!";
-				ig.game.playerStats.gameOver = true;
-				ig.game.playerStats.currentLevel = ig.game.playerStats.worldLevel; // this makes sure fog of war is not on
-				//console.log("set level to world level");
-				ig.game.spawnpoint = "underworldJail"; // if this instance of level change has a spawn point, put player there, otherwise put where weltmeister layout has player
-				ig.game.loadLevelDeferred(ig.global['Level' + ig.game.playerStats.worldLevel]);
-			}
-*/
-
+		var player = this.getEntitiesByType( EntityPlayer )[0];
+		if( player ) {
+			this.screen.x = player.pos.x - ig.system.width/2;
+			this.screen.y = player.pos.y - ig.system.height/2;
+		}
 			// Update all entities and BackgroundMaps
 			this.parent();
 /*
@@ -589,6 +512,7 @@ ig.module(
 		},
 		draw: function() {
 			// Call the parent implementation to draw all Entities and BackgroundMaps
+			this.buttonFont.draw("asdf",0,0)
 			this.parent();
 			// Call draw() on your special entity with the extra
 			// parameter added

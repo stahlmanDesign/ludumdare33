@@ -1,12 +1,17 @@
 ig.module( 'game.levels.main' )
-.requires( 'impact.image','game.entities.player' )
+.requires( 'impact.image','game.entities.player','game.entities.jack' )
 .defines(function(){
 LevelMain=/*JSON[*/{
 	"entities": [
 		{
 			"type": "EntityPlayer",
-			"x": 568,
-			"y": 424
+			"x": 548,
+			"y": 344
+		},
+		{
+			"type": "EntityJack",
+			"x": 652,
+			"y": 428
 		}
 	],
 	"layer": [
