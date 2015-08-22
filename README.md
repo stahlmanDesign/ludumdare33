@@ -9,7 +9,7 @@ Ludum Dare 33 compo attempt
 
 #The game
 
-- 
+- uses ImpactJS game engine (you must provide the engine which requires a license) but all other source code is here
 
 #Setup
 
