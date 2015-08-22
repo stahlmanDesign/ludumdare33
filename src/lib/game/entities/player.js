@@ -34,12 +34,13 @@ ig.module(
 			this.addAnim( 'idle', 1, [0] );
         	this.addAnim( 'run', 0.07, [1,0,2,0] );			// name or ID, duration of frame, the different frames (tiles) to animate
 			this.addAnim( 'jump', 1, [3], true );		// true = stop at the last frame
-        	this.addAnim( 'fall', 1, [3] );
+        	this.addAnim( 'fall', 0.5, [4,3] );
         	this.addAnim( 'up', 0.20, [6,7] );
         	this.addAnim( 'down', 0.20, [7,6] );
         	this.addAnim( 'pain', 0.3, [11,12,11,11,12], true );
 
 			this.jump = 350;
+			this.deadlyFallTimer = new ig.Timer(0);
 		},
 
 
@@ -81,7 +82,11 @@ ig.module(
 			} else if (this.vel.y < 0) {
 
 				this.currentAnim = this.anims.jump;
-			} else if (this.vel.y > 0) {
+			} else if (this.vel.y > 0 && !this.isClimbing) {
+
+				// if timer
+				if (this.deadlyFallTimer.delta() > 0) this.deadlyFallTimer.set(1); // one second; will count from -1 to 0
+
 				if (this.currentAnim != this.anims.fall) {
 					this.currentAnim = this.anims.fall.rewind();
 				}
@@ -110,6 +115,12 @@ ig.module(
 					this.vel.y = - this.jump //-this.jump;
 					//this.sfxJump.play();
 				//}
+			}
+
+			if (this.standing && this.deadlyFallTimer.delta() > 0){
+				this.currentAnim = this.anims.pain.rewind();
+
+				this.deadlyFallTimer.set(0);
 			}
 			// Move!
 			this.parent();
