@@ -11,7 +11,7 @@ ig.module(
         size: { x: 36, y: 100 }, // total sprite size = {x:72,y:126}
         offset: {x:18,y:26},		// collision box smaller than sprite size
         maxVel: {
-			x: 175,
+			x: 275,
 			y: 300
 		},
         type: ig.Entity.TYPE.A, // Player friendly group
@@ -20,9 +20,11 @@ ig.module(
 
 		name:"player",
         animSheet: new ig.AnimationSheet('media/giant.png', 72, 126),
-		accelGround: 600,
+		accelGround: 900,
 		accelAir: 500,
+		speed:400,
         friction: {x:200,y:0},
+        messageFont: new ig.Font('media/outlinedfont.png'),
         init: function( x, y, settings ) {
 
 	        ig.game.player = this;
@@ -132,6 +134,17 @@ ig.module(
 			// Move!
 			this.parent();
 			//ig.show(this.deadlyFallTimer.delta(),"dft")
+		},
+		draw: function(){
+
+			if (!ig.global.wm && this.deadlyFallTimer.delta() > 0 && !this.standing){
+				var s = ig.system.scale * 2; // modif because this game is upsampled for pixel look
+				var x = this.pos.x * s - ig.game.screen.x * s;
+				var y = (this.pos.y) * s - ig.game.screen.y * s;
+
+				this.messageFont.draw("\nYOU'RE TOO HIGH!...", x / 2, (y / 2) - 31, ig.Font.ALIGN.CENTER);
+			}
+			this.parent();
 		},
 		check:function(other){
 			if (other instanceof EntityJack && this.vel.y > 0 && !this.standing){
