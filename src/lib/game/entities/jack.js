@@ -29,11 +29,11 @@ ig.module(
 		},
 		accelGround: 600,
 		accelAir: 500,
-		speed: {"current":0,"idle":0,"walk":150},
-		distanceToFlee: 60,
+		speed: {"current":0,"idle":0,"walk":150,"flee":350},
+		distanceToFlee: 90,
 		flipTimer: null,
         messageFont: new ig.Font('media/outlinedfont.png'),
-
+		name : "jack",
 		chain: null,
 		message: "",
 		state:"idle",
@@ -78,7 +78,7 @@ ig.module(
 			    .wait(this.getRand(5))
 			    .repeat();         // ...and repeat the whole baseitem forever.
 
-			this.flipTimer = new ig.Timer(this.getRand(4)); // only flip once a second to avoid frantic flipping in tight area
+			this.flipTimer = new ig.Timer(this.getRand(15)); // only flip once a second to avoid frantic flipping in tight area
 
 			this.throwSeedTimer = new ig.Timer(1); // when throwing a seed only throw one a second max
         },
@@ -87,10 +87,12 @@ ig.module(
 		},
         update: function() {
 
+			this.chain(); // execute the event chain
 			// Near an edge? return!
 			if (!ig.game.collisionMap.getTile(this.pos.x + (this.flip ? +4 : this.size.x - 4), this.pos.y + this.size.y + 1)) {
 				if (this.vel.y == 0){ // don't flip in air
 				this.flip = !this.flip;
+				this.flipTimer.set(this.getRand(15));
 				// We have to move the offset.x around a bit when going
 				// in reverse direction, otherwise the  hitbox will
 				// be at the tail end.
@@ -100,8 +102,20 @@ ig.module(
 
 	        var accel = this.standing ? this.accelGround : this.accelAir;
 			//ig.show(this.accel.x)
-			this.chain(); // execute the event chain
 
+
+			// toe about to step over an edge on next update?
+			var toe = this.pos.y + this.size.y + 1
+			if (!ig.game.collisionMap.getTile(this.pos.x + (this.flip ? +6 : this.size.x - 6), toe) // if toe over edge
+				|| ( this.flipTimer.delta() > 0	)) {			// or if time to flip
+
+					this.flip = !this.flip;
+					this.flipTimer.set(this.getRand(15));
+
+
+			}
+
+			// but beware of giant
 			if (ig.game.player) {
 				if (this.distanceTo(ig.game.player) < this.distanceToFlee && this.fleeingTimer.delta() > 0) {
 					this.fleeingTimer.set(1);
@@ -112,15 +126,7 @@ ig.module(
 					if (this.state == "walk") this.speed.current = this.speed.walk;
 				}
 			}
-			// toe about to step over an edge on next update?
-			var toe = this.pos.y + this.size.y + 1
-			if (!ig.game.collisionMap.getTile(this.pos.x + (this.flip ? +6 : this.size.x - 6), toe)) {
-				// if walking on an entity or near an edge, flip if more than 1 second since last flip
-				if ( this.flipTimer.delta() > 0	) {
-					this.flip = !this.flip;
-					this.flipTimer.reset();
-				}
-			}
+
 			var xdir = this.flip ? -1 : 1;
 			this.vel.x = this.speed.current * xdir;
 
@@ -130,7 +136,7 @@ ig.module(
 					this.currentAnim = this.anims.idle;
 					this.currentAnim.flip.x = this.flip; // sit still but in direction of last movement
 
-					if (Math.random() <  0.1 * ig.system.tick && this.throwSeedTimer.delta() > 0) {
+					if (Math.random() <  2 * ig.system.tick && this.throwSeedTimer.delta() > 0) {
 						ig.game.spawnEntity(EntitySeed, this.pos.x,this.pos.y - 30,{flip:Math.random()>0.5 ? 1 : 0});
 						this.throwSeedTimer.reset();
 					}
@@ -147,26 +153,20 @@ ig.module(
 				this.currentAnim.flip.x = this.flip;
 			} else if (this.state == "flee"){
 
-				this.speed.current = this.speed.walk * 1.5;
+				this.currentAnim = this.anims.walk;
+				this.speed.current = this.speed.flee;
 
 			}
 			this.currentAnim.flip.x = this.flip;
 
-			// ------------------ begin ladder code ------------------
-			if (this.isConfiguredForClimbing){
-				this.checkForLadder(this);
-				if (this.ladderTouchedTimer.delta() > 0) this.isTouchingLadder = false; // reset in case player leaves ladder. This allows to walk across/atop ladder
-				else{console.log("hey")}
-			}
-
-			// ------------------  end  ladder code ------------------
-
 
 			this.parent();
         },
-        kill: function(){
+        kill: function(blood){
 	        this.parent();
-			ig.game.spawnEntity( EntitySplash, this.pos.x, this.pos.y);
+			if (blood){
+				 ig.game.spawnEntity( EntitySplash, this.pos.x, this.pos.y);
+			}
         },
        	handleMovementTrace: function( res ) {
 			this.parent( res );
@@ -178,13 +178,18 @@ ig.module(
 			}
 		},
 		check: function(other){
-			if (other instanceof EntityLadder){
-				this.vel.x = 0;
+			if (other instanceof EntityLadder && !this.hasItem){ // if on ladder, go up unless has item
+				//this.vel.x *= 0.5;
 				this.state = "idle";
-
-				this.vel.y = -100;
+				this.flip = 1;
+				this.flipTimer.set(this.getRand(5)+10); // don't flip until climbed beanstalk
+				this.vel.y = -200;
 			}
 
+			if (other instanceof EntityHouse && this.hasItem){
+				var BLOOD = false;
+				this.kill(BLOOD);
+			}
 
 		},
 		draw: function(){
@@ -199,23 +204,50 @@ ig.module(
 				}
 				if (this.hasItem) this.messageFont.draw("\nHE HE!...", x / 2, (y / 2) - 31, ig.Font.ALIGN.CENTER);
 			}
+
+			// temporary debugging of where toe is
+/*
+			if (!ig.global.wm ){
+				var toe = {
+					y: ig.system.getDrawPos((this.pos.y + this.size.y + 1 - ig.game.screen.y)),
+					x: ig.system.getDrawPos((this.pos.x + this.size.x - ig.game.screen.x))
+				};
+
+
+		        ig.system.context.strokeStyle = "white";
+		        ig.system.context.lineWidth = 1;
+		        ig.system.context.beginPath();
+		        ig.system.context.moveTo(toe.x,toe.y);
+		        ig.system.context.lineTo(toe.x+10,toe.y);
+		        ig.system.context.stroke();
+		        ig.system.context.closePath();
+	        }
+*/
 			this.parent();
 		},
 		handleMovementTrace: function(res) {
-
-				var upwardPassageOnlyTile = 11; //11th tile on collision tiles (0 is air empty for air, so tiles start at 1)
-
-				var tileSize = 8;
-
-				// toe about to enter open air into water (collision tile 46) on next update?
-				var toe = this.pos.y + this.size.y+1;
-				if (ig.game.collisionMap.getTile(this.pos.x + (this.flip ? +6 : this.size.x - 6), toe) == upwardPassageOnlyTile) {
-					// toe is on upwardPassageOnly tile, do we make an exception and allow passage down?
-					//if (this.hasItem) this.vel.x = 0 ; // force down no matter what collision tile is there
-					this.kill()
-				}
-
 			this.parent(res);
+
+			var upwardPassageOnlyTile = 12; //12th tile on collision tiles (0 is air empty for air, so tiles start at 1)
+
+			var tileSize = 8;
+
+			// toe touching upwardPassageOnlyTile ?
+			var toe = this.pos.y + this.size.y+1;
+			//console.log("tile = " + ig.game.collisionMap.getTile(this.pos.x + (this.flip ? +6 : this.size.x - 6), toe)) // find out which tile
+			if (ig.game.collisionMap.getTile(this.pos.x + (this.flip ? +6 : this.size.x - 6), toe) == upwardPassageOnlyTile) {
+
+				// toe is on upwardPassageOnly tile
+				if (this.hasItem) this.pos.y +=10; // force down no matter what collision tile is there
+				//console.log(this)
+			}
+
+			// collision with a wall? return!
+			if( res.collision.x ) {
+				this.flip = !this.flip;
+			}
+
+
 		}
     });
         // Add additional classes here that will only be accessed by this entity

@@ -148,7 +148,8 @@ ig.module(
 		},
 		check:function(other){
 			if (other instanceof EntityJack && this.vel.y > 0 && !this.standing){
-				other.kill();
+				var BLOOD = true;
+				other.kill(BLOOD);
 			}
 		}
 	});

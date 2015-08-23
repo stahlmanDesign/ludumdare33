@@ -45,8 +45,8 @@ EntityLadder = EntityBaseLadder.extend({
 			if (this.lifeTimer.delta() > 0) {
 				//shrink to wither away
 				if (this.lifeTimer.delta() < 0.1) this.setFadeOut(5); // only do this once, this hack does it a few times and then lets it play out
-				this.size.y-=5;
-				this.pos.y +=5;
+				this.size.y-=7;
+				this.pos.y +=7;
 			}else{
 				if (this.spawnTimer.delta() > 0){
 					if (this.size.y > 415) return;

@@ -17,7 +17,7 @@ EntityCoin = ig.Entity.extend({
 	sfxCollect: new ig.Sound( 'media/sounds/coin.*' ),
 
 	possessedByJack:false, // does he possess this item
-
+	name:"coin",
 	origPos: {
 		x: 0,
 		y: 0
@@ -44,14 +44,14 @@ EntityCoin = ig.Entity.extend({
 
 	check: function( other ) {
 		this.possessedByJack = false; // reset each time in case jack is killed or drops
-		other.hasItem = false;
+		other.hasCoin = false;
 		// The instanceof should always be true, since the player is
 		// the only entity with TYPE.A - and we only check against A.
 		if( other instanceof EntityJack ) {
 			//other.giveCoins(1);
 			//this.sfxCollect.play();
 			this.possessedByJack = true;
-			other.hasItem = true;
+			other.hasCoin = true;
 			// TODO tell other (jack) that he has the item so he can go back to village
 			this.pos = other.pos; // stick to jack
 		}
