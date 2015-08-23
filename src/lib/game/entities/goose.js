@@ -54,11 +54,12 @@ ig.module(
 		// LITE: (opposite of FIXED, a "weak" entity always moves away from a collision)
 
         animSheet: new ig.AnimationSheet('media/goose.png', 24, 36),
+		sfxCollect: new ig.Sound( 'media/sounds/coin.*' ),
 
         init: function (x, y, settings) {
 
 			ig.game.goose = this;
-
+			this.origPos = this.pos;
             this.parent(x, y, settings);
 
             this.addAnim('idle', 1, [3,4]);
@@ -176,6 +177,28 @@ ig.module(
 			if( res.collision.x ) {
 				this.flip = !this.flip;
 				this.offset.x = this.flip ? 0 : 0;
+			}
+		},
+		check: function( other ) {
+
+
+			// The instanceof should always be true, since the player is
+			// the only entity with TYPE.A - and we only check against A.
+			if( other instanceof EntityJack ) {
+				//other.giveCoins(1);
+				//this.sfxCollect.play();
+
+				other.hasItem.goose = true;
+				this.pos = other.pos; // stick to jack
+			}
+			if (other instanceof EntityHouse){
+				for (var i in ig.game.entities){
+					var ent = ig.game.entities[i];
+					if (ent instanceof EntityJack && ent.hasItem.goose) ent.hasItem.goose = false; // he no longer has the coin
+				}
+
+				this.sfxCollect.play();
+				this.kill();
 			}
 		}
     });

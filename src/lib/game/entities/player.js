@@ -147,7 +147,7 @@ ig.module(
 			this.parent();
 		},
 		check:function(other){
-			if (other instanceof EntityJack && this.vel.y > 0 && !this.standing){
+			if (other instanceof EntityJack && this.vel.y > 0 && !this.standing && other.vel.y >= 0){
 				var BLOOD = true;
 				other.kill(BLOOD);
 			}

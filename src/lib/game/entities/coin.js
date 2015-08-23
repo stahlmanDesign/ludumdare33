@@ -9,15 +9,15 @@ ig.module(
 EntityCoin = ig.Entity.extend({
 	size: {x: 36, y: 36},
 
-	type: ig.Entity.TYPE.NONE,
-	checkAgainst: ig.Entity.TYPE.B, // Check against friendly
+	type: ig.Entity.TYPE.A,
+	checkAgainst: ig.Entity.TYPE.BOTH, // Check against friendly
 	collides: ig.Entity.COLLIDES.LITE,
 
 	animSheet: new ig.AnimationSheet( 'media/coin.png', 36, 36 ),
 	sfxCollect: new ig.Sound( 'media/sounds/coin.*' ),
 
 
-	name:"coin",
+
 	origPos: {
 		x: 0,
 		y: 0
@@ -27,6 +27,7 @@ EntityCoin = ig.Entity.extend({
 		this.parent( x, y, settings );
 		this.addAnim( 'idle', 0.2, [0,0,0,0,0,0,0,0,0,1,2,3,2,1] );
 		ig.game.coin = this;
+		this.origPos = this.pos;
 	},
 
 
@@ -53,8 +54,16 @@ EntityCoin = ig.Entity.extend({
 			//this.sfxCollect.play();
 
 			other.hasItem.coin = true;
-			// TODO tell other (jack) that he has the item so he can go back to village
 			this.pos = other.pos; // stick to jack
+		}
+		if (other instanceof EntityHouse){
+			for (var i in ig.game.entities){
+				var ent = ig.game.entities[i];
+				if (ent instanceof EntityJack && ent.hasItem.coin) ent.hasItem.coin = false; // he no longer has the coin
+			}
+
+			this.sfxCollect.play();
+			this.kill();
 		}
 	}
 });

@@ -67,17 +67,17 @@ ig.module(
 			this.fleeingTimer = new ig.Timer(0);
 
        		this.chain = EventChain(this)
-				.wait(this.getRand(5))
+				.wait(this.getRand(0.5))
 			    .then(function() {  // ...then spawn a baddie...
 			        //ig.game.spawnEntity(EntitySeed, this.startPosition.x, this.startPosition.y);
 			        this.state = "idle";
 			      })
-			    .wait(1)            // ...wait some more...
+			    .wait(this.getRand(0.5))            // ...wait some more...
 			    .then(function() {  // ...then spawn a lesser baddie...
 				    this.state = "walk";
 
 			      })
-			    .wait(this.getRand(5))
+			    .wait(this.getRand(10))
 			    .repeat();         // ...and repeat the whole baseitem forever.
 
 			this.flipTimer = new ig.Timer(this.getRand(15)); // only flip once a second to avoid frantic flipping in tight area
@@ -90,7 +90,7 @@ ig.module(
         update: function() {
 
 			// TODO this not working correctly
-			//this.hasItem.coin = false; // set false each frame, will be set true if touching
+			//(this.hasItem.coin || this.hasItem.goose || this.hasItem.harp) = false; // set false each frame, will be set true if touching
 
 
 			this.chain(); // execute the event chain
@@ -129,7 +129,7 @@ ig.module(
 					//console.log(this.distanceTo(treasure[i]))
 					    var angle = this.angleTo(treasure[i]);
 
-                        this.vel.x = Math.cos(angle) * this.speed.current;
+                        this.vel.x = Math.cos(angle) * 200;
                         //this.vel.y = Math.sin(angle) * this.speed.current;
 						// TODO go in distanceTo direction
 						// if left flip else don't flip
@@ -159,8 +159,8 @@ ig.module(
 					this.currentAnim = this.anims.idle;
 					this.currentAnim.flip.x = this.flip; // sit still but in direction of last movement
 
-					if (Math.random() <  2 * ig.system.tick && this.throwSeedTimer.delta() > 0) {
-						ig.game.spawnEntity(EntitySeed, this.pos.x,this.pos.y - 30,{flip:Math.random()>0.5 ? 1 : 0});
+					if (Math.random() <  1 * ig.system.tick && this.throwSeedTimer.delta() > 0) {
+						ig.game.spawnEntity(EntitySeed, this.pos.x,this.pos.y - ((Math.random()*20)+15),{flip:Math.random()>0.5 ? true : false});
 						this.throwSeedTimer.reset();
 					}
 			} else if (this.state == "walk") {
@@ -179,11 +179,19 @@ ig.module(
 				this.currentAnim = this.anims.walk;
 				this.speed.current = this.speed.flee;
 
+				if (Math.random() <  4 * ig.system.tick && this.throwSeedTimer.delta() > 0) {
+						ig.game.spawnEntity(EntitySeed, this.pos.x,this.pos.y - ((Math.random()*20)+15),{flip:Math.random()>0.5 ? true : false});
+						this.throwSeedTimer.reset();
+					}
+
 			}
 			this.currentAnim.flip.x = this.flip;
 
 
 			this.parent();
+			ig.show("hasCoin",this.hasItem.coin)
+			ig.show("hasGoose",this.hasItem.goose)
+			ig.show("hasHarp",this.hasItem.harp)
         },
         kill: function(blood){
 	        this.parent();
@@ -192,18 +200,22 @@ ig.module(
 			}
         },
 		check: function(other){
-			if (other instanceof EntityLadder && !this.hasItem.coin){ // if on ladder, go up unless has item
-				//this.vel.x *= 0.5;
+			if (other instanceof EntityLadder && (!this.hasItem.coin && !this.hasItem.goose && !this.hasItem.harp)){ // if on ladder, go up unless has item
+				this.vel.x = 0;
+				this.pos.x = other.pos.x ;
 				this.state = "idle";
+				this.currentAnim = this.anims.idle;
 				this.flip = 1;
-				this.flipTimer.set(this.getRand(5)+10); // don't flip until climbed beanstalk
+				this.flipTimer.set(this.getRand(5)+5); // don't flip until climbed beanstalk
 				this.vel.y = -200;
 			}
 
-			if (other instanceof EntityHouse && this.hasItem.coin){
+/*
+			if (other instanceof EntityHouse && (this.hasItem.coin || this.hasItem.goose || this.hasItem.harp)){
 				var BLOOD = false;
 				this.kill(BLOOD);
 			}
+*/
 
 		},
 		draw: function(){
@@ -216,7 +228,7 @@ ig.module(
 
 					this.messageFont.draw("\nCAN'T CATCH ME!...", x / 2, (y / 2) - 31, ig.Font.ALIGN.CENTER);
 				}
-				if (this.hasItem.coin) this.messageFont.draw("\nHE HE!...", x / 2, (y / 2) - 31, ig.Font.ALIGN.CENTER);
+				if ((this.hasItem.coin || this.hasItem.goose || this.hasItem.harp)) this.messageFont.draw("\nHE HE!...", x / 2, (y / 2) - 31, ig.Font.ALIGN.CENTER);
 			}
 
 			// temporary debugging of where toe is
@@ -252,7 +264,7 @@ ig.module(
 			if (ig.game.collisionMap.getTile(this.pos.x + (this.flip ? +6 : this.size.x - 6), toe) == upwardPassageOnlyTile) {
 
 				// toe is on upwardPassageOnly tile
-				if (this.hasItem.coin){
+				if ((this.hasItem.coin || this.hasItem.goose || this.hasItem.harp)){
 					 this.pos.y +=10; // force down no matter what collision tile is there
 					 console.log("got item should go down")
 				}

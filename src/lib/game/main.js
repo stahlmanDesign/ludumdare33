@@ -35,6 +35,9 @@ ig.module(
 	feefifofum = ig.Game.extend({
 		gravity: 1000,				// All entities affected by this. Without this, entities don't fall
 
+
+
+
 		buttonFont: new ig.Font('media/outlinedfont.png'),
 		init: function(levelToStart) {
 

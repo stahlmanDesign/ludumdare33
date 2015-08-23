@@ -9,8 +9,8 @@ ig.module(
 EntityHouse = ig.Entity.extend({
 	size: {x: 36, y: 36},
 
-	type: ig.Entity.TYPE.NONE,
-	checkAgainst: ig.Entity.TYPE.NONE, // Check against friendly
+	type: ig.Entity.TYPE.A,
+	checkAgainst: ig.Entity.TYPE.BOTH, // Check against friendly
 	collides: ig.Entity.COLLIDES.NEVER,
 
 	animSheet: new ig.AnimationSheet( 'media/house.png', 36, 36 ),

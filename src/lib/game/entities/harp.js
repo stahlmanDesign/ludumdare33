@@ -9,18 +9,20 @@ ig.module(
 EntityHarp = ig.Entity.extend({
 	size: {x: 36, y: 36},
 
-	type: ig.Entity.TYPE.NONE,
-	checkAgainst: ig.Entity.TYPE.A, // Check against friendly
-	collides: ig.Entity.COLLIDES.NEVER,
+	type: ig.Entity.TYPE.A,
+	checkAgainst: ig.Entity.TYPE.BOTH, // Check against friendly
+	collides: ig.Entity.COLLIDES.LITE,
 
 	animSheet: new ig.AnimationSheet( 'media/harp.png', 36, 36 ),
-
+	sfxCollect: new ig.Sound( 'media/sounds/coin.*' ),
 
 
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
 		ig.game.harp = this;
+		this.origPos = this.pos;
 		this.addAnim( 'idle', 0.1, [0,0,0,0,0,0,0,0,0,1,2] );
+
 	},
 
 
@@ -32,14 +34,25 @@ EntityHarp = ig.Entity.extend({
 		// in the .parent() update:
 		this.currentAnim.update();
 	},
-
-
 	check: function( other ) {
+
+
 		// The instanceof should always be true, since the player is
 		// the only entity with TYPE.A - and we only check against A.
 		if( other instanceof EntityJack ) {
 			//other.giveCoins(1);
+			//this.sfxCollect.play();
 
+			other.hasItem.harp = true;
+			this.pos = other.pos; // stick to jack
+		}
+		if (other instanceof EntityHouse){
+			for (var i in ig.game.entities){
+				var ent = ig.game.entities[i];
+				if (ent instanceof EntityJack && ent.hasItem.coin) ent.hasItem.harp = false; // he no longer has the coin
+			}
+
+			this.sfxCollect.play();
 			this.kill();
 		}
 	}
