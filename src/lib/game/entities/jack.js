@@ -45,7 +45,7 @@ ig.module(
 		// Check Against property, 4 possiblities
 		// NONE[default]: (check() not called)
 		// A: (A touches B) --- B: (B touches A) --- BOTH: (A touches A, B touches B)
-		collides: ig.Entity.COLLIDES.LITE,
+		collides: ig.Entity.COLLIDES.PASSIVE,
 		// Collides property, 5 possibilities
 		// NEVER[default]: (ignores all collisions)
 		// FIXED: (a "strong" entity that won't move as a result of a collision. Like elevators and moving platforms.)
@@ -179,6 +179,13 @@ ig.module(
 			if( res.collision.x ) {
 				this.flip = !this.flip;
 				this.offset.x = this.flip ? 0 : 0;
+			}
+		},
+		check: function(other){
+			if (other instanceof EntityLadder){
+				this.vel.x = 0;
+				this.state = "idle"
+				this.vel.y = -100;
 			}
 		}
     });

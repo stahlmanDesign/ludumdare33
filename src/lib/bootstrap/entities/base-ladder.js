@@ -22,7 +22,8 @@ ig.module(
 		ladderTexture: null,	// defined in ladder.js, not in base-ladder.js
 		ladderSpeed: 60, 		// default. An entity can override this so different entites climb at different speeds
 
-		checkAgainst: ig.Entity.TYPE.A,
+		type: ig.Entity.TYPE.B,
+		checkAgainst: ig.Entity.TYPE.BOTH,
 		// Check Against property, 4 possiblities
 		// NONE[default]: (check() not called)
 		// A: (A touches B) --- B: (B touches A) --- BOTH: (A touches A, B touches B)
