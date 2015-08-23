@@ -32,9 +32,9 @@ ig.module(
 		speed: {"current":0,"idle":0,"walk":150},
 		distanceToFlee: 60,
 		flipTimer: null,
+        messageFont: new ig.Font('media/outlinedfont.png'),
 
 		chain: null,
-		message: "",
 		message: "",
 		state:"idle",
 
@@ -184,6 +184,38 @@ ig.module(
 
 				this.vel.y = -100;
 			}
+
+
+		},
+		draw: function(){
+				var s = ig.system.scale * 2; // modif because this game is upsampled for pixel look
+				var x = this.pos.x * s - ig.game.screen.x * s;
+				var y = (this.pos.y) * s - ig.game.screen.y * s;
+			if (!ig.global.wm){
+				if (this.fleeingTimer.delta() < 0 ){
+
+
+					this.messageFont.draw("\nCAN'T CATCH ME!...", x / 2, (y / 2) - 31, ig.Font.ALIGN.CENTER);
+				}
+				if (this.hasItem) this.messageFont.draw("\nHE HE!...", x / 2, (y / 2) - 31, ig.Font.ALIGN.CENTER);
+			}
+			this.parent();
+		},
+		handleMovementTrace: function(res) {
+
+				var upwardPassageOnlyTile = 11; //11th tile on collision tiles (0 is air empty for air, so tiles start at 1)
+
+				var tileSize = 8;
+
+				// toe about to enter open air into water (collision tile 46) on next update?
+				var toe = this.pos.y + this.size.y+1;
+				if (ig.game.collisionMap.getTile(this.pos.x + (this.flip ? +6 : this.size.x - 6), toe) == upwardPassageOnlyTile) {
+					// toe is on upwardPassageOnly tile, do we make an exception and allow passage down?
+					//if (this.hasItem) this.vel.x = 0 ; // force down no matter what collision tile is there
+					this.kill()
+				}
+
+			this.parent(res);
 		}
     });
         // Add additional classes here that will only be accessed by this entity

@@ -5,8 +5,8 @@ LevelMain=/*JSON[*/{
 	"entities": [
 		{
 			"type": "EntityPlayer",
-			"x": 2330,
-			"y": 2550
+			"x": 2686,
+			"y": 2146
 		},
 		{
 			"type": "EntityJack",
@@ -25,8 +25,8 @@ LevelMain=/*JSON[*/{
 		},
 		{
 			"type": "EntityGoose",
-			"x": 2936,
-			"y": 2222
+			"x": 2768,
+			"y": 2234
 		},
 		{
 			"type": "EntityJack",
@@ -40,8 +40,8 @@ LevelMain=/*JSON[*/{
 		},
 		{
 			"type": "EntityJack",
-			"x": 2674,
-			"y": 2634
+			"x": 2954,
+			"y": 2214
 		},
 		{
 			"type": "EntityJack",
@@ -50,13 +50,13 @@ LevelMain=/*JSON[*/{
 		},
 		{
 			"type": "EntityCoin",
-			"x": 3024,
-			"y": 2208
+			"x": 3028,
+			"y": 2220
 		},
 		{
 			"type": "EntityHarp",
-			"x": 3140,
-			"y": 2172
+			"x": 3164,
+			"y": 2220
 		}
 	],
 	"layer": [
