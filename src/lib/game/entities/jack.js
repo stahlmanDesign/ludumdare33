@@ -144,7 +144,7 @@ ig.module(
 				this.speed.current = this.speed.walk;
 				// seek player if close
 				if (this.vel.x < 0) {
-					this.flip = true
+					this.flip = true;
 				} else {
 					this.flip = false;
 				}
@@ -155,6 +155,17 @@ ig.module(
 
 			}
 			this.currentAnim.flip.x = this.flip;
+
+			// ------------------ begin ladder code ------------------
+			if (this.isConfiguredForClimbing){
+				this.checkForLadder(this);
+				if (this.ladderTouchedTimer.delta() > 0) this.isTouchingLadder = false; // reset in case player leaves ladder. This allows to walk across/atop ladder
+				else{console.log("hey")}
+			}
+
+			// ------------------  end  ladder code ------------------
+
+
 			this.parent();
         },
         kill: function(){

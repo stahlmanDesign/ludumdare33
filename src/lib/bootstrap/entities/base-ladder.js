@@ -127,7 +127,7 @@ ig.module(
 
 			entityInstance.checkForLadder = function(entity){
 
-				if (entity == ig.game.player){					// calculations currently only work for player but support for other entities could be added
+				if (entity == ig.game.player){					// calculations currently only work for player but trying to add
 
 					var accel = entity.standing ? entity.accelGround : entity.accelAir;	// determine accel depending if in air or on ground etc.
 					if (ig.input.state('left')) { 					// pressed left
