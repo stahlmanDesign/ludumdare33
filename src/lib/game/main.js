@@ -26,20 +26,57 @@ ig.module(
 
 		gravity: 1000,				// All entities affected by this. Without this, entities don't fall
 
-		gameStats:{
-			player:{
-				health:3,
-				deaths:0
+		gameStats: {
+			level: {
+				number: 1,
+				"1": {
+					jacksInLevel: 1,
+					jacksKilled:0
+				},
+				"2": {
+					jacksInLevel: 2,
+					jacksKilled:0
+				},
+				"3": {
+					jacksInLevel: 4,
+					jacksKilled:0
+				},
+				"4": {
+					jacksInLevel: 6,
+					jacksKilled:0
+				},
+				"5": {
+					jacksInLevel: 8,
+					jacksKilled:0
+				},
+				"6": {
+					jacksInLevel: 8,
+					jacksKilled:0
+				}
 			},
-			jack:{
-				deaths:0,
-				stoleItem:{ // meaning is a house
-					coin:false,
-					goose:false,
-					harp:false,
+			player: {
+				lives: 3,
+				deaths: 0
+			},
+			jacks: {
+				lives: 1,
+				deaths: 0,
+				stolenItem: { // meaning is a house
+					coin: false,
+					goose: false,
+					harp: false,
 				}
 			}
 		},
+
+		// HUD icons, will define coordinates in atlas later
+		playerIcon: 		new ig.Image('media/playerIcon.png'),
+		jackIcon: 			new ig.Image('media/jackIcon.png'),
+		coinIcon: 			new ig.Image('media/coinIcon.png'),
+		gooseIcon: 			new ig.Image('media/gooseIcon.png'),
+		harpIcon: 			new ig.Image('media/harpIcon.png'),
+
+
 		pause: function() {
 			ig.Timer.timeScale = 0;
 			ig.game.paused = true;
@@ -52,7 +89,7 @@ ig.module(
 
 		buttonFont: new ig.Font('media/outlinedfont.png'),
 		init: function() {
-
+			ig.game.buttonFont.letterSpacing = -1; // because added black outline around font
 
 			// Bind keys, gamepad and tactile input
 			ig.input.bind(ig.KEY.LEFT_ARROW, 'left');
@@ -82,7 +119,10 @@ ig.module(
 		  ig.Timer.timeScale = 1;
 		  ig.game.paused = false;
 		},
-
+		gameOver:function(){
+			ig.game.pause();
+			ig.game.gameIsOver = true;
+		},
 		update: function() {
 
 			// camera follow player
@@ -94,6 +134,7 @@ ig.module(
 				ig.game.paused == true ? ig.game.unpause() : ig.game.pause(); // toggle pause game
 			}
 
+			if (ig.game.gameStats.jacks.stolenItem.coin == true && ig.game.gameStats.jacks.stolenItem.goose ==true && ig.game.gameStats.jacks.stolenItem.harp ==true) ig.game.gameOver();
 			// Update all entities and BackgroundMaps
 			this.parent();
 		},
@@ -111,90 +152,80 @@ ig.module(
 			// Call draw() on your special entity with the extra
 			// parameter added
 
-/*
 			//console.log(ig.game.entitiesOnTop.length)
-			for (var i = 0; i < ig.game.entitiesOnTop.length; i++) {
-				ig.game.entitiesOnTop[i].draw(true)
-			}
+
 			// Draw the heart and number of coins in the upper left corner.
 			// 'this.player' is set by the player's init method
 			if (ig.game.player) {
-				var x = 56,
-					y = 30;
+				var x = 10,
+					y = 10;
+
 				// draw HUD inventory items
-				var spriteSize = 0;
 
-				if (ig.game.playerStats.currentLevel != "Title"){	// don't show some things on title screen
-					ig.game.buttonFont.draw("Wisdom", x, y, ig.Font.ALIGN.RIGHT);
-					ig.system.context.fillStyle = "#D2FFFE"; // cyan
-					ig.system.context.fillRect(x+4,y,ig.game.getInventory("player", "wisdom").quantity*1,6);
-
-					y += 10;
-
-					ig.game.buttonFont.draw("Spirit", x, y, ig.Font.ALIGN.RIGHT);
-					var ctx = ig.system.context;
-					ig.system.context.fillStyle = "#F7989B"; // red
-					ig.system.context.fillRect(x+4,y,ig.game.getInventory("player", "spirit").quantity*1,6);
-				    //ctx.fillRect(x,y,x+45,y+5);
-
-					y += 10;
-
-					ig.game.buttonFont.draw("Courage", x, y, ig.Font.ALIGN.RIGHT);
-					var ctx = ig.system.context;
-					ig.system.context.fillStyle = "#FDFF9E"; // yellow
-					ig.system.context.fillRect(x+4,y,ig.game.getInventory("player", "courage").quantity*1,6);
-
-					x += 24;
-
-					//if (ig.game.timeElapsed.game > 0){
-						y += 16;
-						if (ig.game.getInventory("piper","clarinet").quantity == 0 ) ig.game.buttonFont.draw("Elapsed: " + new Date(null, null, null, null, null, ig.game.timeElapsed.game).toTimeString().match(/\d{2}:\d{2}:\d{2}/)[0], x, y, ig.Font.ALIGN.RIGHT);
-						else 														 ig.game.buttonFont.draw("Elapsed: " + new Date(null, null, null, null, null, ig.game.playerStats.timeElapsed.game).toTimeString().match(/\d{2}:\d{2}:\d{2}/)[0], x, y, ig.Font.ALIGN.RIGHT);
-					//}
+				if (ig.game.gameIsOver){
+					ig.game.buttonFont.draw("GAME OVER! YOU GOT TO LEVEL " + ig.game.gameStats.level.number, x, y, ig.Font.ALIGN.LEFT);
 				}else{
-					ig.game.buttonFont.draw(ig.game.version, x-12, y, ig.Font.ALIGN.RIGHT);
+					ig.game.buttonFont.draw("SQUASH JACK and his clones BEFORE HE STEALS YOUR TREASURE, BUT DON'T FALL OFF THE BEANSTALK\nARROW KEYS TO MOVE, X TO JUMP", x, y, ig.Font.ALIGN.LEFT);
 				}
-				y -= 18;
-				if (ig.game.playerStats.currentLevel != "Title"){	// don't show some things on title screen
-					for (var i = 0; i < ig.game.inventory.player.length; i++) {
-						if (ig.game.inventory.player[i].quantity > 0) {
-							if (ig.game.inventory.player[i].item == "musicalnotes") {
-								spriteSize = 12;
-							} else {
-								spriteSize = 24;
-							}
-							if (ig.game.inventory.player[i].item == "curiosity" ||
-								ig.game.inventory.player[i].item == "gamevictory"||
-								ig.game.inventory.player[i].item == "wisdom"||
-								ig.game.inventory.player[i].item == "spirit"||
-								ig.game.inventory.player[i].item == "courage"
-								) { // this is for internal use, or does not need to draw icon in inventory. curiosity is so Una will give an item just on initial player contact.
-								// do nothing...
-							} else {
-								x += 12; // advance drawing order for sprite graphic
-								var icon = ig.game.inventory.player[i].icon;
-								var spritePosition = ig.game.inventory.player[i].spritePosition;
-								ig.game[icon].drawTile(x, y - 16, spritePosition, spriteSize); // We  want to draw the 255th tile of game sprite-sheet (255 = spritePosition)
-								x += spriteSize; // advance drawing order some more for count
-								if (ig.game.inventory.player[i].item == "countdown") {
+				y += 22;
 
-									var seconds = ig.game.danteSecondsLeft();
+				ig.game.buttonFont.draw("Level: " + ig.game.gameStats.level.number + " Lives left: ", x, y, ig.Font.ALIGN.LEFT);
+				// look X num times depending on giant lives left to draw how many lives left upper-right HUD
+				for (var i = 0; i < ig.game.gameStats.player.lives; i ++ ){
+					var icon = ig.game.playerIcon;
+					var spritePosition = 0;
+					var spriteSize = 24;
+					icon.drawTile(x, y, spritePosition, spriteSize);
+					x += 24;
+				}
+				x -= 24 * ig.game.gameStats.player.lives; // move "cursor" back to left
 
-									ig.game.buttonFont.draw("Time\nleft\n" + new Date(null, null, null, null, null, (seconds)).toTimeString().match(/\d{2}:\d{2}:\d{2}/)[0], x, y - 12);
-								} else ig.game.buttonFont.draw('x ' + ig.game.inventory.player[i].quantity, x, y - 12);
-								x += spriteSize;
-							}
-						}
-					}
+				y += 32;
+
+				ig.game.buttonFont.draw("Num. Jacks to squash this level (grand total of --> " + ig.game.gameStats.jacks.deaths + " squashed so far)", x, y, ig.Font.ALIGN.LEFT);
+				//ig.system.context.fillStyle = "#D2FFFE"; // cyan
+				//ig.system.context.fillRect(x+4,y,20,6);
+
+				y += 6;
+
+				for (var i = 0; i < ig.game.gameStats.jacks.lives; i ++ ){
+					var icon = ig.game.jackIcon;
+					var spritePosition = 0;
+					var spriteSize = 24;
+					icon.drawTile(x, y, spritePosition, spriteSize);
+					x += 24;
+				}
+				x -= 24 * ig.game.gameStats.jacks.lives; // move "cursor" back to left
+
+				y += 32;
+
+				ig.game.buttonFont.draw("treasure remaining", x, y, ig.Font.ALIGN.LEFT);
+				//ig.system.context.fillStyle = "#D2FFFE"; // cyan
+				//ig.system.context.fillRect(x+4,y,20,6);
+
+				y += 6;
+				if (ig.game.gameStats.jacks.stolenItem.coin == false){
+					var icon = ig.game.coinIcon;
+					var spritePosition = 0;
+					var spriteSize = 24;
+					icon.drawTile(x, y, spritePosition, spriteSize);
+					x += 24;
+				}
+				if (ig.game.gameStats.jacks.stolenItem.goose == false){
+					var icon = ig.game.gooseIcon;
+					var spritePosition = 0;
+					var spriteSize = 24;
+					icon.drawTile(x, y, spritePosition, spriteSize);
+					x += 24;
+				}
+				if (ig.game.gameStats.jacks.stolenItem.harp == false){
+					var icon = ig.game.harpIcon;
+					var spritePosition = 0;
+					var spriteSize = 24;
+					icon.drawTile(x, y, spritePosition, spriteSize);
+					x += 24;
 				}
 			}
-			// Draw touch buttons, if we have any -- buttons A and B
-			if (window.myTouchButtons) {
-				window.myTouchButtons.align();
-				window.myTouchButtons.draw();
-				ig.game.joystick.draw();
-			}
-*/
 		}
 
 	});

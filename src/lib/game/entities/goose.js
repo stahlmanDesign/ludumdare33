@@ -196,7 +196,7 @@ ig.module(
 					var ent = ig.game.entities[i];
 					if (ent instanceof EntityJack && ent.hasItem.goose) ent.hasItem.goose = false; // he no longer has the coin
 				}
-
+				ig.game.gameStats.jacks.stolenItem.goose = true;
 				this.sfxCollect.play();
 				this.kill();
 			}

@@ -29,7 +29,7 @@ ig.module(
 		},
 		accelGround: 600,
 		accelAir: 500,
-		speed: {"current":0,"idle":0,"walk":150,"flee":350},
+		speed: {"current":0,"idle":0,"walk":150,"flee":250},
 		distanceToFlee: 90,
 		distanceToCovet: 400,
 		flipTimer: null,
@@ -58,6 +58,8 @@ ig.module(
         animSheet: new ig.AnimationSheet('media/jack.png', 24, 36),
 
         init: function (x, y, settings) {
+
+			this.origPos = this.pos;
 
             this.parent(x, y, settings);
 
@@ -180,6 +182,7 @@ ig.module(
 				this.speed.current = this.speed.flee;
 
 				if (Math.random() <  4 * ig.system.tick && this.throwSeedTimer.delta() > 0) {
+
 						ig.game.spawnEntity(EntitySeed, this.pos.x,this.pos.y - ((Math.random()*20)+15),{flip:Math.random()>0.5 ? true : false});
 						this.throwSeedTimer.reset();
 					}
@@ -194,10 +197,32 @@ ig.module(
 			ig.show("hasHarp",this.hasItem.harp)
         },
         kill: function(blood){
-	        this.parent();
 			if (blood){
 				 ig.game.spawnEntity( EntitySplash, this.pos.x, this.pos.y);
+				 ig.game.gameStats.jacks.lives --;
+				 ig.game.gameStats.jacks.deaths ++;
+				 ig.game.gameStats.level[ig.game.gameStats.level.number].jacksKilled ++;
+				// console.log(ig.game.gameStats)
+
+
+				//if (ig.game.gameStats.jacks.lives == 0 && ig.game.gameStats.level.number <= 6)
+
+
+				if (ig.game.gameStats.level[ig.game.gameStats.level.number].jacksKilled == ig.game.gameStats.level[ig.game.gameStats.level.number].jacksInLevel){
+					ig.game.gameStats.level.number ++; // limit to 4 levels
+					for (var i =0; i < ig.game.gameStats.level[ig.game.gameStats.level.number].jacksInLevel; i ++){ // spawn the number of jacks for current Level
+						//console.log("spawn a jack")
+						var x = this.origPos.x + (Math.random()* 220) +100;			// spawn point depends on where jack was in first level
+						var y = this.origPos.y;
+					 	ig.game.spawnEntity( EntityJack, x, y); // respawn at origin but with random X value so giant can't sit there and kill over and over
+//					 	console.log("spawned jack at " + x + ", " + y)
+					}
+
+					// also set jacks to current number for level to draw heads for HUD
+					ig.game.gameStats.jacks.lives = ig.game.gameStats.level[ig.game.gameStats.level.number].jacksInLevel;
+				}
 			}
+	        this.parent();
         },
 		check: function(other){
 			if (other instanceof EntityLadder && (!this.hasItem.coin && !this.hasItem.goose && !this.hasItem.harp)){ // if on ladder, go up unless has item

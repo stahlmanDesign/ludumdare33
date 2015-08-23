@@ -61,7 +61,7 @@ EntityCoin = ig.Entity.extend({
 				var ent = ig.game.entities[i];
 				if (ent instanceof EntityJack && ent.hasItem.coin) ent.hasItem.coin = false; // he no longer has the coin
 			}
-
+ig.game.gameStats.jacks.stolenItem.coin = true;
 			this.sfxCollect.play();
 			this.kill();
 		}

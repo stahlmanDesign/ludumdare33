@@ -128,7 +128,11 @@ ig.module(
 			}
 			if (this.standing && this.deadlyFallTimer.delta() > 0){
 				this.currentAnim = this.anims.pain.rewind();
-				if (this.deadlyFallTimer.delta() > 2) this.deadlyFallTimer.set(1); // after 2 seconds of pain, reset
+				if (this.deadlyFallTimer.delta() > 2) {
+					this.deadlyFallTimer.set(1); // after 2 seconds of pain, reset
+					ig.game.gameStats.player.lives --;
+					if (ig.game.gameStats.player.lives == 0) ig.game.gameOver();
+				}
 			}
 
 			// Move!

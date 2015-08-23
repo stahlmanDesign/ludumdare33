@@ -51,7 +51,7 @@ EntityHarp = ig.Entity.extend({
 				var ent = ig.game.entities[i];
 				if (ent instanceof EntityJack && ent.hasItem.coin) ent.hasItem.harp = false; // he no longer has the coin
 			}
-
+ig.game.gameStats.jacks.stolenItem.harp = true;
 			this.sfxCollect.play();
 			this.kill();
 		}
