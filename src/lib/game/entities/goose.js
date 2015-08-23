@@ -57,6 +57,8 @@ ig.module(
 
         init: function (x, y, settings) {
 
+			ig.game.goose = this;
+
             this.parent(x, y, settings);
 
             this.addAnim('idle', 1, [3,4]);

@@ -151,6 +151,25 @@ ig.module(
 				var BLOOD = true;
 				other.kill(BLOOD);
 			}
+		},
+		handleMovementTrace: function(res) {
+			this.parent(res);
+
+			var upwardPassageOnlyTile = 12; //12th tile on collision tiles (0 is air empty for air, so tiles start at 1)
+
+			var tileSize = 8;
+
+			// toe touching upwardPassageOnlyTile ?
+			var toe = this.pos.y + this.size.y+1;
+			//console.log("tile = " + ig.game.collisionMap.getTile(this.pos.x + (this.flip ? +6 : this.size.x - 6), toe)) // find out which tile
+			if (ig.game.collisionMap.getTile(this.pos.x + (this.flip ? +6 : this.size.x - 6), toe) == upwardPassageOnlyTile) {
+
+				// toe is on upwardPassageOnly tile
+				if (ig.input.state("down")){
+					 this.pos.y +=10; // force down no matter what collision tile is there
+					 console.log("giant doing down through clouds")
+				}
+			}
 		}
 	});
 });

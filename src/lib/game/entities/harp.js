@@ -19,7 +19,7 @@ EntityHarp = ig.Entity.extend({
 
 	init: function( x, y, settings ) {
 		this.parent( x, y, settings );
-
+		ig.game.harp = this;
 		this.addAnim( 'idle', 0.1, [0,0,0,0,0,0,0,0,0,1,2] );
 	},
 

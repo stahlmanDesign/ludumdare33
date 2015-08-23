@@ -31,6 +31,7 @@ ig.module(
 		accelAir: 500,
 		speed: {"current":0,"idle":0,"walk":150,"flee":350},
 		distanceToFlee: 90,
+		distanceToCovet: 400,
 		flipTimer: null,
         messageFont: new ig.Font('media/outlinedfont.png'),
 		name : "jack",
@@ -38,6 +39,7 @@ ig.module(
 		message: "",
 		state:"idle",
 
+		hasItem:{"coin":false,"goose":false,"harp":false},
 		type: ig.Entity.TYPE.B,
 		// Type property, 3 possiblities
 		// NONE[default] --- A: ("friendly") --- B: ("enemy")
@@ -87,6 +89,10 @@ ig.module(
 		},
         update: function() {
 
+			// TODO this not working correctly
+			//this.hasItem.coin = false; // set false each frame, will be set true if touching
+
+
 			this.chain(); // execute the event chain
 			// Near an edge? return!
 			if (!ig.game.collisionMap.getTile(this.pos.x + (this.flip ? +4 : this.size.x - 4), this.pos.y + this.size.y + 1)) {
@@ -113,6 +119,23 @@ ig.module(
 					this.flipTimer.set(this.getRand(15));
 
 
+			}
+
+			// seek treasure
+			var treasure = [ig.game.coin,ig.game.harp,ig.game.goose];
+			for (var i in treasure){
+				if (treasure[i]) {
+					if (this.distanceTo(treasure[i]) < this.distanceToCovet && this.fleeingTimer.delta() > 0) {
+					//console.log(this.distanceTo(treasure[i]))
+					    var angle = this.angleTo(treasure[i]);
+
+                        this.vel.x = Math.cos(angle) * this.speed.current;
+                        //this.vel.y = Math.sin(angle) * this.speed.current;
+						// TODO go in distanceTo direction
+						// if left flip else don't flip
+//						this.flip = !this.flip;
+					}
+				}
 			}
 
 			// but beware of giant
@@ -168,17 +191,8 @@ ig.module(
 				 ig.game.spawnEntity( EntitySplash, this.pos.x, this.pos.y);
 			}
         },
-       	handleMovementTrace: function( res ) {
-			this.parent( res );
-
-			// Collision with a wall? return!
-			if( res.collision.x ) {
-				this.flip = !this.flip;
-				this.offset.x = this.flip ? 0 : 0;
-			}
-		},
 		check: function(other){
-			if (other instanceof EntityLadder && !this.hasItem){ // if on ladder, go up unless has item
+			if (other instanceof EntityLadder && !this.hasItem.coin){ // if on ladder, go up unless has item
 				//this.vel.x *= 0.5;
 				this.state = "idle";
 				this.flip = 1;
@@ -186,7 +200,7 @@ ig.module(
 				this.vel.y = -200;
 			}
 
-			if (other instanceof EntityHouse && this.hasItem){
+			if (other instanceof EntityHouse && this.hasItem.coin){
 				var BLOOD = false;
 				this.kill(BLOOD);
 			}
@@ -202,7 +216,7 @@ ig.module(
 
 					this.messageFont.draw("\nCAN'T CATCH ME!...", x / 2, (y / 2) - 31, ig.Font.ALIGN.CENTER);
 				}
-				if (this.hasItem) this.messageFont.draw("\nHE HE!...", x / 2, (y / 2) - 31, ig.Font.ALIGN.CENTER);
+				if (this.hasItem.coin) this.messageFont.draw("\nHE HE!...", x / 2, (y / 2) - 31, ig.Font.ALIGN.CENTER);
 			}
 
 			// temporary debugging of where toe is
@@ -238,8 +252,10 @@ ig.module(
 			if (ig.game.collisionMap.getTile(this.pos.x + (this.flip ? +6 : this.size.x - 6), toe) == upwardPassageOnlyTile) {
 
 				// toe is on upwardPassageOnly tile
-				if (this.hasItem) this.pos.y +=10; // force down no matter what collision tile is there
-				//console.log(this)
+				if (this.hasItem.coin){
+					 this.pos.y +=10; // force down no matter what collision tile is there
+					 console.log("got item should go down")
+				}
 			}
 
 			// collision with a wall? return!
