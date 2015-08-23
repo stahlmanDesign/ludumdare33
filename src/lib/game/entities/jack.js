@@ -86,20 +86,16 @@ ig.module(
 			return Math.random()*factor;
 		},
         update: function() {
-			ig.show("SC",this.speed.current);
-			ig.show("state",this.state)
-			// Near an edge? return!
-			if( !ig.game.collisionMap.getTile(
-					this.pos.x + (this.flip ? +4 : this.size.x -4),
-					this.pos.y + this.size.y+1
-				)
-			) {
-				this.flip = !this.flip;
 
+			// Near an edge? return!
+			if (!ig.game.collisionMap.getTile(this.pos.x + (this.flip ? +4 : this.size.x - 4), this.pos.y + this.size.y + 1)) {
+				if (this.vel.y == 0){ // don't flip in air
+				this.flip = !this.flip;
 				// We have to move the offset.x around a bit when going
 				// in reverse direction, otherwise the  hitbox will
 				// be at the tail end.
 				this.offset.x = this.flip ? 6 : 0;
+				}
 			}
 
 	        var accel = this.standing ? this.accelGround : this.accelAir;
@@ -134,7 +130,7 @@ ig.module(
 					this.currentAnim = this.anims.idle;
 					this.currentAnim.flip.x = this.flip; // sit still but in direction of last movement
 
-					if (Math.random() <  0.05 && this.throwSeedTimer.delta() > 0) {
+					if (Math.random() <  0.1 * ig.system.tick && this.throwSeedTimer.delta() > 0) {
 						ig.game.spawnEntity(EntitySeed, this.pos.x,this.pos.y - 30,{flip:Math.random()>0.5 ? 1 : 0});
 						this.throwSeedTimer.reset();
 					}
@@ -184,7 +180,8 @@ ig.module(
 		check: function(other){
 			if (other instanceof EntityLadder){
 				this.vel.x = 0;
-				this.state = "idle"
+				this.state = "idle";
+
 				this.vel.y = -100;
 			}
 		}
