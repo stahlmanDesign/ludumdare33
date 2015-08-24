@@ -23,6 +23,17 @@ Ludum Dare 33 compo attempt
 - decided to privately live blog (will make public later) instead of update constantly in README
 
 #Setup
+- requires the ImpactJS game engine impactjs.com
+- Install the impact-node server by typing ```npm install -g impact-node``` and then type ```impact-node serve``` and go to http://localhost:3000
+- Does not require ```impact-node``` but is set up for it and is missing some of Impact's tools for building using bake script.
+- Dev code changes are seen in localhost:3000. To build, type ```impact-node build```</li>
+</ul>
+
+# Blog post during the construction
+- http://blog.stahlmandesign.com/ludum-dare-33-live-blog-of-compo-ld33-ldjam/
+
+# Official entry (to vote if you like it)
+- http://ludumdare.com/compo/ludum-dare-33/?action=preview&uid=49932
 
 
 #Author
