@@ -253,7 +253,7 @@ ig.module(
 
 					this.messageFont.draw("\nCAN'T CATCH ME!...", x / 2, (y / 2) - 31, ig.Font.ALIGN.CENTER);
 				}
-				if ((this.hasItem.coin || this.hasItem.goose || this.hasItem.harp)) this.messageFont.draw("\nHE HE!...", x / 2, (y / 2) - 31, ig.Font.ALIGN.CENTER);
+				if ((this.hasItem.coin || this.hasItem.goose || this.hasItem.harp)) this.messageFont.draw("\nHEE HEE!...", x / 2, (y / 2) - 39, ig.Font.ALIGN.CENTER);
 			}
 
 			// temporary debugging of where toe is

@@ -165,7 +165,7 @@ ig.module(
 				if (ig.game.gameIsOver){
 					ig.game.buttonFont.draw("GAME OVER! YOU GOT TO LEVEL " + ig.game.gameStats.level.number, x, y, ig.Font.ALIGN.LEFT);
 				}else{
-					ig.game.buttonFont.draw("SQUASH JACK and his clones BEFORE HE STEALS YOUR TREASURE, BUT DON'T FALL OFF THE BEANSTALK\nARROW KEYS TO MOVE, X TO JUMP", x, y, ig.Font.ALIGN.LEFT);
+					ig.game.buttonFont.draw("SQUASH JACK and his clones before they steal your treasure, but BUT DON'T FALL OFF THE BEANSTALK\Arrow keys to MOVE, CLIMB, FALL THROUGH CLOUDS, & X to JUMP (to squash)", x, y, ig.Font.ALIGN.LEFT);
 				}
 				y += 22;
 
@@ -182,7 +182,7 @@ ig.module(
 
 				y += 32;
 
-				ig.game.buttonFont.draw("Num. Jacks to squash this level (grand total of --> " + ig.game.gameStats.jacks.deaths + " squashed so far)", x, y, ig.Font.ALIGN.LEFT);
+				ig.game.buttonFont.draw("Num. Jacks to squash this level: "+ig.game.gameStats.jacks.lives+ "      Total of " + ig.game.gameStats.jacks.deaths + " squashed so far!", x, y, ig.Font.ALIGN.LEFT);
 				//ig.system.context.fillStyle = "#D2FFFE"; // cyan
 				//ig.system.context.fillRect(x+4,y,20,6);
 
@@ -199,11 +199,11 @@ ig.module(
 
 				y += 32;
 
-				ig.game.buttonFont.draw("treasure remaining", x, y, ig.Font.ALIGN.LEFT);
+				ig.game.buttonFont.draw("Treasure remaining:", x, y, ig.Font.ALIGN.LEFT);
 				//ig.system.context.fillStyle = "#D2FFFE"; // cyan
 				//ig.system.context.fillRect(x+4,y,20,6);
 
-				y += 6;
+				y += 12;
 				if (ig.game.gameStats.jacks.stolenItem.coin == false){
 					var icon = ig.game.coinIcon;
 					var spritePosition = 0;
