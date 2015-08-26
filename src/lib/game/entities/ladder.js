@@ -35,7 +35,7 @@ EntityLadder = EntityBaseLadder.extend({
 	init: function(x,y,settings){
         this.parent(x, y, settings);
 		this.spawnTimer = new ig.Timer(0.1);
-		this.lifeTimer = new ig.Timer(11);
+		this.lifeTimer = new ig.Timer(21);
 
 	},
 	update: function() {
@@ -44,8 +44,9 @@ EntityLadder = EntityBaseLadder.extend({
 
 			if (this.lifeTimer.delta() > 0) {
 				//shrink to wither away
-				if (this.lifeTimer.delta() < 0.1) this.setFadeOut(5); // only do this once, this hack does it a few times and then lets it play out
-				var decay = Math.random()*800 * ig.system.tick;
+				if (this.lifeTimer.delta() < 0.1) this.setFadeOut(2); // only do this once, this hack does it a few times and then lets it play out
+				var decay = Math.floor(10 + Math.random()*5);
+				//console.log(decay)
 				this.size.y -= decay;
 				this.pos.y += decay;
 			}else{
@@ -54,13 +55,23 @@ EntityLadder = EntityBaseLadder.extend({
 					this.spawnTimer.reset(); // otherwise stop growing
 					//ig.game.spawnEntity(EntityLadder, this.pos.x, this.pos.y - 60, {"invisible":false});
 					//this.offset.y ++;
-					var growth = Math.random()*1800 * ig.system.tick;
+					var growth = Math.floor(10 + Math.random()*15);
 					this.size.y += growth;
 					this.pos.y -= growth;
 
 				}
 			}
-			if (this.lifeTimer.delta() > 10) this.kill();
+			if (this.lifeTimer.delta() > 3 || this.size.y <= 50) {// prevent going lower than 0 and causing firefox bug drawing to canvas with negative crop value
+				this.kill();
+				//console.log("killed beanstalk");
+			}
+		}
+	},
+	check: function(other){
+		this.parent(other);
+		if (other instanceof EntityPlayer && other.vel.y != 0){
+			if (other.vel.y < 0) other.vel.y -= 80; // make climb faster
+			if (other.vel.y > 0) other.vel.y += 80; // make climb faster
 		}
 	}
 });

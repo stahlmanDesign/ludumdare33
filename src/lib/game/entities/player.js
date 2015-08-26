@@ -52,13 +52,13 @@ ig.module(
 			// Handle user input; move left or right
 			var accel = this.standing ? this.accelGround : this.accelAir;
 			if( ig.input.state('left')) {
-				if (this.accel.x > 0) this.vel.x *=0.25; // prevents sliding as if on ice when changing direction
+				if (this.accel.x > 0) this.vel.x *=0.15; // prevents sliding as if on ice when changing direction
 				this.accel.x = -accel;
 				this.flip = true;
 
 			}
 			else if( ig.input.state('right')) {
-				if (this.accel.x < 0) this.vel.x *=0.25; // prevents sliding as if on ice when changing direction
+				if (this.accel.x < 0) this.vel.x *=0.15; // prevents sliding as if on ice when changing direction
 				this.accel.x = accel;
 				this.flip = false;
 			}

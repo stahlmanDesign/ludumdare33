@@ -34,7 +34,7 @@ ig.module(
 		// ACTIVE: (if ACTIVE, or ACTIVE and PASSIVE entities collide, they will both move apart)
 		// PASSIVE: (if 2 PASSIVE entities of similar types collide, they can overlap. i.e., two freindly entities can pass by each other if passive)
 		// LITE: (opposite of FIXED, a "weak" entity always moves away from a collision)
-		zIndex: -1,				// must be behind entities
+		zIndex: 0,				// must be behind entities
 		eligibleClimbers : [],	// set below in init()
 		invisible: false,
 
@@ -53,7 +53,7 @@ ig.module(
 			this.parent(x, y, settings);
 		},
 		update: function() {
-			this.zIndex = -1;
+			this.zIndex = 0;
 			ig.game.sortEntitiesDeferred();
 
 			this.parent();
