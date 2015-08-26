@@ -71,10 +71,12 @@ EntityLadder = EntityBaseLadder.extend({
 		this.parent(other);
 
 
+/*
 		if (other instanceof EntityPlayer && other.vel.y != 0){
 			if (other.vel.y < 0) other.vel.y = -120; // make climb faster
 			if (other.vel.y > 0) other.vel.y = 120; // make climb faster
 		}
+*/
 	}
 });
 

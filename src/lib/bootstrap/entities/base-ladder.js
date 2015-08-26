@@ -20,7 +20,7 @@ ig.module(
 		_wmScalable:true,
 		spriteId: 0,			// Use this if you have different sprites in your texture
 		ladderTexture: null,	// defined in ladder.js, not in base-ladder.js
-		ladderSpeed: 60, 		// default. An entity can override this so different entites climb at different speeds
+		ladderSpeed: 200, 		// default. An entity can override this so different entites climb at different speeds
 
 		type: ig.Entity.TYPE.B,
 		checkAgainst: ig.Entity.TYPE.BOTH,

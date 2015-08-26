@@ -22,7 +22,7 @@ ig.module(
         animSheet: new ig.AnimationSheet('media/giant.png', 72, 126),
 		accelGround: 900,
 		accelAir: 500,
-		speed:400,
+		speed: {current:0,normal:400,ladder:600},
         friction: {x:200,y:0},
         messageFont: new ig.Font('media/outlinedfont.png'),
         init: function( x, y, settings ) {
