@@ -43,7 +43,7 @@ ig.module(
 
 			this.jump = 350;
 			this.deadlyFallTimer = new ig.Timer(1);
-
+			this.loseLifeTimer = new ig.Timer(0.5);
 		},
 
 
@@ -52,13 +52,13 @@ ig.module(
 			// Handle user input; move left or right
 			var accel = this.standing ? this.accelGround : this.accelAir;
 			if( ig.input.state('left')) {
-				if (this.accel.x > 0) this.vel.x *=0.15; // prevents sliding as if on ice when changing direction
+				if (this.accel.x > 0) this.vel.x *=0.05; // prevents sliding as if on ice when changing direction
 				this.accel.x = -accel;
 				this.flip = true;
 
 			}
 			else if( ig.input.state('right')) {
-				if (this.accel.x < 0) this.vel.x *=0.15; // prevents sliding as if on ice when changing direction
+				if (this.accel.x < 0) this.vel.x *=0.05; // prevents sliding as if on ice when changing direction
 				this.accel.x = accel;
 				this.flip = false;
 			}
@@ -110,7 +110,7 @@ ig.module(
 			if (this.isConfiguredForClimbing){
 				this.checkForLadder(this);
 				if (this.ladderTouchedTimer.delta() > 0) this.isTouchingLadder = false; // reset in case player leaves ladder. This allows to walk across/atop ladder
-				else this.deadlyFallTimer.set(0.5); // on ladder so cancel falling timer
+				else this.deadlyFallTimer.set(1); // on ladder so cancel falling timer
 			}
 
 			// ------------------  end  ladder code ------------------
@@ -127,13 +127,21 @@ ig.module(
 				this.deadlyFallTimer.set(1); // reset to one second cause safely on ground
 			}
 			if (this.standing && this.deadlyFallTimer.delta() > 0){
-				this.currentAnim = this.anims.pain.rewind();
-				if (this.deadlyFallTimer.delta() > 1) {
-					this.deadlyFallTimer.set(1); // after 2 seconds of pain, reset
+
+
+
+
+					this.currentAnim = this.anims.pain.rewind();
+
+
+				}
+
+				if (this.deadlyFallTimer.delta() > 0.5) {
+					this.deadlyFallTimer.set(0.5); // after x seconds of pain, reset
 					ig.game.gameStats.player.lives --;
 					if (ig.game.gameStats.player.lives == 0) ig.game.gameOver();
 				}
-			}
+
 
 			// Move!
 			this.parent();

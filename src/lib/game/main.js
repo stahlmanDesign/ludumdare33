@@ -165,7 +165,7 @@ ig.module(
 				if (ig.game.gameIsOver){
 					ig.game.buttonFont.draw("GAME OVER! YOU GOT TO LEVEL " + ig.game.gameStats.level.number, x, y, ig.Font.ALIGN.LEFT);
 				}else{
-					ig.game.buttonFont.draw("SQUASH JACK and his clones before they steal your treasure, but BUT DON'T FALL OFF THE BEANSTALK\Arrow keys to MOVE, CLIMB, FALL THROUGH CLOUDS, & X to JUMP (to squash)", x, y, ig.Font.ALIGN.LEFT);
+					ig.game.buttonFont.draw("SQUASH JACK and his clones before they steal your treasure, but BUT DON'T FALL OFF THE BEANSTALK\nArrow keys to MOVE, CLIMB, FALL THROUGH CLOUDS, & X to JUMP (to squash)", x, y, ig.Font.ALIGN.LEFT);
 				}
 				y += 22;
 
