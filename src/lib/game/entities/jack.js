@@ -59,8 +59,10 @@ ig.module(
 
         init: function (x, y, settings) {
 
-			this.origPos = this.pos;
-
+			if (!ig.global.wm &&  !ig.game.gameStats.jacks.origPosSet) { // only set this the very first time jack is spawned. All other will spawn from this initial location which is laid out in level editor for level 1
+				ig.game.gameStats.jacks.origPos = this.pos;
+				ig.game.gameStats.jacks.origPosSet = true;
+			}
             this.parent(x, y, settings);
 
             this.addAnim('idle', 1, [0]);
@@ -197,7 +199,7 @@ ig.module(
 			ig.show("hasHarp",this.hasItem.harp)
         },
         kill: function(blood){
-			if (blood){
+			if (blood && !ig.global.wm){
 				 ig.game.spawnEntity( EntitySplash, this.pos.x, this.pos.y);
 				 ig.game.gameStats.jacks.lives --;
 				 ig.game.gameStats.jacks.deaths ++;
@@ -212,8 +214,8 @@ ig.module(
 					ig.game.gameStats.level.number ++; // limit to 4 levels
 					for (var i =0; i < ig.game.gameStats.level[ig.game.gameStats.level.number].jacksInLevel; i ++){ // spawn the number of jacks for current Level
 						//console.log("spawn a jack")
-						var x = this.origPos.x + (Math.random()* 220) +100;			// spawn point depends on where jack was in first level
-						var y = this.origPos.y;
+						var x = ig.game.gameStats.jacks.origPos.x + (Math.random()* 600) -300;			// spawn point depends on where jack was in first level
+						var y = ig.game.gameStats.jacks.origPos.y;
 					 	ig.game.spawnEntity( EntityJack, x, y); // respawn at origin but with random X value so giant can't sit there and kill over and over
 //					 	console.log("spawned jack at " + x + ", " + y)
 					}

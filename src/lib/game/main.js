@@ -59,6 +59,8 @@ ig.module(
 				deaths: 0
 			},
 			jacks: {
+				origPos:{x:0,y:0},
+				origPosSet:false,
 				lives: 1,
 				deaths: 0,
 				stolenItem: { // meaning is a house
@@ -156,7 +158,7 @@ ig.module(
 
 			// Draw the heart and number of coins in the upper left corner.
 			// 'this.player' is set by the player's init method
-			if (ig.game.player) {
+			if (!ig.global.wm && ig.game.player) {
 				var x = 10,
 					y = 10;
 
