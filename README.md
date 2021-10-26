@@ -1,23 +1,24 @@
-#README
+# Ludum Dare 33 compo attempt
 
-Ludum Dare 33 compo attempt
+<p>
+<img src="./ffff.gif"/>
+<figcaption>
+  <em>Animated gif of the final game entry</em>
+</figcaption>
+</p>
 
+<p>
+<img src="./ffff.png"/>
+<figcaption>
+  <em>Screen capture</em>
+</figcaption>
+</p>
 
 # The Theme for Ludum Dare 33 is:
 
 - You are the Monster #LDJAM @ludumdare
 
-<img src="./ffff.gif"/>
-<figcaption>
-Animated gif of the final game entry.
-</figcaption>
-
-<img src="./ffff.png"/>
-<figcaption>
-Screen capture
-</figcaption>
-
-#The game
+# The game
 
 - uses ImpactJS game engine (you must provide the engine which requires a license) but all other source code is here
 
@@ -29,10 +30,10 @@ Screen capture
 - if you get to the bottom, you go on rampage through village
 - if you are on beanstalk while it's cut down, you fall and die
 
-# update at 23:31
+# update at 23:31 (on day of game jam)
 - decided to privately live blog (will make public later) instead of update constantly in README
 
-#Setup
+# Setup
 - requires the ImpactJS game engine impactjs.com
 - Install the impact-node server by typing ```npm install -g impact-node``` and then type ```impact-node serve``` and go to http://localhost:3000
 - Does not require ```impact-node``` but is set up for it and is missing some of Impact's tools for building using bake script.
@@ -46,7 +47,7 @@ Screen capture
 - http://ludumdare.com/compo/ludum-dare-33/?action=preview&uid=49932
 
 
-#Author
+# Author
 
 - Justin Stahlman
 - @stahlmandesign on github
