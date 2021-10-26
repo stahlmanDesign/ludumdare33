@@ -7,6 +7,16 @@ Ludum Dare 33 compo attempt
 
 - You are the Monster #LDJAM @ludumdare
 
+<img src="./ffff.gif"/>
+<figcaption>
+Animated gif of the final game entry.
+</figcaption>
+
+<img src="./ffff.png"/>
+<figcaption>
+Screen capture
+</figcaption>
+
 #The game
 
 - uses ImpactJS game engine (you must provide the engine which requires a license) but all other source code is here
